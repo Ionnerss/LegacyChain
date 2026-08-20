@@ -2,14 +2,23 @@ package LegacyChain;
 
 public class Driver {
     public static void main(String[] args) {
-        Blockchain blockchain = new Blockchain();
+        Blockchain blockchain = new Blockchain(3);
 
-        blockchain.addBlock("Alice pays Bob 10 coins");
-        blockchain.addBlock("Bob pays Carol 5 coins");
-        blockchain.addBlock("Carol pays Dave 2 coins");
-        blockchain.addBlock("Dave pays Eve 8 coins");
-        blockchain.addBlock("Eve pays Frank 1 coin");
+        Block k = blockchain.addBlock("Alice pays Bob 10 coins");
+        System.out.println("Block k hash: " + k.hash);
 
-        System.out.println(blockchain.isValid());
+        Block l = blockchain.addBlock("Charlie pays Dana 5 coins");
+        System.out.println("Block l hash: " + l.hash);
+
+        Block m = blockchain.addBlock("Eve pays Frank 7 coins");
+        System.out.println("Block m hash: " + m.hash);
+
+        Block n = blockchain.addBlock("Grace pays Heidi 2 coins");
+        System.out.println("Block n hash: " + n.hash);
+
+        Block o = blockchain.addBlock("Ivan pays Judy 9 coins");
+        System.out.println("Block o hash: " + o.hash);
+
+        System.out.println("Validity: " + blockchain.isValid());
     }
 }
