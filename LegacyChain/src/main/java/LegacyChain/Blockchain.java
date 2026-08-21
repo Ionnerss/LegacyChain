@@ -18,9 +18,15 @@ public class Blockchain {
         this.chain.add(genesis);
     }
 
+    public int size() { return chain.size(); }
+
+    public Block getBlock(int index) { return chain.get(index); }
+
+    public Block getLatestBlock() { return chain.get(chain.size() - 1); }
+
     public Block addBlock(String data) {
         int index = chain.size() - 1;
-        String lastHash = chain.get(index).hash;
+        String lastHash = chain.get(index).getHash();
 
         Block nBlock = new Block(data, lastHash);
         nBlock.mineBlock(difficulty);
@@ -31,8 +37,8 @@ public class Blockchain {
     public boolean isValid() {
         String target = "0".repeat(difficulty);
         Block genesis = chain.get(0);
-        if (!genesis.hash.equals(genesis.calculateHash()) 
-            || !genesis.hash.startsWith(target)) 
+        if (!genesis.getHash().equals(genesis.calculateHash()) 
+            || !genesis.getHash().startsWith(target)) 
             return false;
 
         int i = 1;
@@ -44,9 +50,9 @@ public class Blockchain {
             - !currBlock.hash.equals(currBlock.calculateHash() checks if data has been modified | protects block's own contents
             - !currBlock.previousHash.equals(prevBlock.hash) checks if full block has been modified and rehashed | protects link to prev block
             */
-            if (!currBlock.hash.equals(currBlock.calculateHash()) 
-                || !currBlock.previousHash.equals(prevBlock.hash) 
-                || !currBlock.hash.startsWith(target))
+            if (!currBlock.getHash().equals(currBlock.calculateHash()) 
+                || !currBlock.getPreviousHash().equals(prevBlock.getHash()) 
+                || !currBlock.getHash().startsWith(target))
                 return false;
             
             i++;
