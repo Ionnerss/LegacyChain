@@ -77,7 +77,7 @@ public class BlockchainTest {
     }
 
     @Test
-    void testProofOfWork() {
+    void testMultipleBlocksChainIsValid() {
         //Arrange
         Blockchain k = new Blockchain(2);
 
@@ -89,5 +89,19 @@ public class BlockchainTest {
 
         // Assert: genesis + 4 correctly linked and secure
         assertTrue(k.isValid());
+    }
+
+    @Test
+    void testProofOfWork() {
+        //Arrange:
+        Blockchain k = new Blockchain(2);
+        String target = "00";
+
+        //Act:
+        Block j = k.addBlock("Block 1");
+
+        //Assert:
+        assertTrue(j.getHash().startsWith(target));
+        assertTrue(k.getBlock(1).getHash().startsWith(target));                                                                                                                                                                                                                
     }
 }
