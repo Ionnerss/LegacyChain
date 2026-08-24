@@ -1,6 +1,7 @@
 package LegacyChain;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Blockchain {
     private ArrayList<Block> chain;
@@ -13,7 +14,7 @@ public class Blockchain {
             throw new IllegalArgumentException("Invalid difficulty setting.");
         this.difficulty = difficulty;
 
-        Block genesis = new Block("Genesis", "0");
+        Block genesis = new Block(new ArrayList<>(), "0");
         genesis.mineBlock(difficulty);
         this.chain.add(genesis);
     }
@@ -24,11 +25,11 @@ public class Blockchain {
 
     public Block getLatestBlock() { return chain.get(chain.size() - 1); }
 
-    public Block addBlock(String data) {
+    public Block addBlock(List<Transaction> transactions) {
         int index = chain.size() - 1;
         String lastHash = chain.get(index).getHash();
 
-        Block nBlock = new Block(data, lastHash);
+        Block nBlock = new Block(transactions, lastHash);
         nBlock.mineBlock(difficulty);
         chain.add(nBlock);
         return nBlock;

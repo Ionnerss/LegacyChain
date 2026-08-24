@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.2" name="LegacyChain.BlockchainTest" time="0.068" tests="8" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.2" name="LegacyChain.TransactionTest" time="0.106" tests="14" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="26"/>
     <property name="sun.jnu.encoding" value="UTF-8"/>
@@ -59,12 +59,18 @@
     <property name="socksNonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="java.class.version" value="70.0"/>
   </properties>
-  <testcase name="testProofOfWork" classname="LegacyChain.BlockchainTest" time="0.032"/>
-  <testcase name="testAddBlockIncreaseSize" classname="LegacyChain.BlockchainTest" time="0.008"/>
-  <testcase name="testLinkedBlocksHashes" classname="LegacyChain.BlockchainTest" time="0.006"/>
-  <testcase name="testBlockchainSize" classname="LegacyChain.BlockchainTest" time="0.003"/>
-  <testcase name="testGenesisPrevHash" classname="LegacyChain.BlockchainTest" time="0.003"/>
-  <testcase name="testInvalidDifficulty" classname="LegacyChain.BlockchainTest" time="0.002"/>
-  <testcase name="testMultipleBlocksChainIsValid" classname="LegacyChain.BlockchainTest" time="0.008"/>
-  <testcase name="testBlockTransactionListImmutability" classname="LegacyChain.BlockchainTest" time="0.001"/>
+  <testcase name="testTransactionModsChangeHash" classname="LegacyChain.TransactionTest" time="0.072"/>
+  <testcase name="testTransactionHashDeterminism" classname="LegacyChain.TransactionTest" time="0.001"/>
+  <testcase name="testValidTransaction" classname="LegacyChain.TransactionTest" time="0.001"/>
+  <testcase name="testNullRecipient" classname="LegacyChain.TransactionTest" time="0.002"/>
+  <testcase name="testNegativeAmount" classname="LegacyChain.TransactionTest" time="0.001"/>
+  <testcase name="testSmallestAmount" classname="LegacyChain.TransactionTest" time="0.001"/>
+  <testcase name="testEmptySender" classname="LegacyChain.TransactionTest" time="0.001"/>
+  <testcase name="testSREquals" classname="LegacyChain.TransactionTest" time="0.0"/>
+  <testcase name="testNullSender" classname="LegacyChain.TransactionTest" time="0.001"/>
+  <testcase name="testEmptyRecipient" classname="LegacyChain.TransactionTest" time="0.001"/>
+  <testcase name="testLargeAmount" classname="LegacyChain.TransactionTest" time="0.001"/>
+  <testcase name="testZeroAmount" classname="LegacyChain.TransactionTest" time="0.001"/>
+  <testcase name="testBlankSender" classname="LegacyChain.TransactionTest" time="0.001"/>
+  <testcase name="testBlankRecipient" classname="LegacyChain.TransactionTest" time="0.001"/>
 </testsuite>

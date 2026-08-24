@@ -3,6 +3,9 @@ package LegacyChain;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class BlockchainTest {
     @Test
     void testBlockchainSize() {
@@ -38,7 +41,7 @@ public class BlockchainTest {
             Should throw IllegalArgumentException since 0 < 1
         */
        assertThrows(IllegalArgumentException.class, 
-                    () -> new Blockchain(0));
+            () -> new Blockchain(0));
     }
 
     @Test
@@ -47,7 +50,9 @@ public class BlockchainTest {
         Blockchain k = new Blockchain(2);
 
         //Act:
-        k.addBlock("Block 1");
+        k.addBlock(new ArrayList<Transaction>(
+            List.of(new Transaction("Bob", "Alex", 10))
+        ));
 
         /*
         Assert:
@@ -67,7 +72,9 @@ public class BlockchainTest {
             Add one block
             Keep the Block returned by addBlock()
         */
-        Block b = k.addBlock("Block 1");
+        Block b = k.addBlock(new ArrayList<Transaction>(
+            List.of(new Transaction("Bob", "Alex", 10))
+        ));
 
         /*
         Assert:
@@ -82,10 +89,18 @@ public class BlockchainTest {
         Blockchain k = new Blockchain(2);
 
         // Act: add four blocks and print their hashes for manual verification
-        k.addBlock("Block A");
-        k.addBlock("Block B");
-        k.addBlock("Block C");
-        k.addBlock("Block D");
+        k.addBlock(new ArrayList<Transaction>(
+            List.of(new Transaction("Bob", "Alex", 10))
+        ));
+        k.addBlock(new ArrayList<Transaction>(
+            List.of(new Transaction("Bill", "Alex", 10))
+        ));
+        k.addBlock(new ArrayList<Transaction>(
+            List.of(new Transaction("Galaxy Eater", "Alex", 10))
+        ));
+        k.addBlock(new ArrayList<Transaction>(
+            List.of(new Transaction("Star Destroyer", "Alex", 10))
+        ));
 
         // Assert: genesis + 4 correctly linked and secure
         assertTrue(k.isValid());
@@ -98,10 +113,28 @@ public class BlockchainTest {
         String target = "00";
 
         //Act:
-        Block j = k.addBlock("Block 1");
+        Block j = k.addBlock(new ArrayList<Transaction>(
+            List.of(new Transaction("Star Destroyer", "Alex", 10))
+        ));
 
         //Assert:
         assertTrue(j.getHash().startsWith(target));
         assertTrue(k.getBlock(1).getHash().startsWith(target));                                                                                                                                                                                                                
+    }
+
+    @Test
+    void testBlockTransactionListImmutability() {
+        Blockchain k = new Blockchain(2);
+
+        ArrayList<Transaction> b = new ArrayList<Transaction>(List.of(
+            new Transaction("Star Destroyer", "Alex", 10),
+            new Transaction("Bob", "Joe", 30)
+        ));
+
+        Block j = k.addBlock(b);
+
+        b.add(new Transaction("Billy", "Nicky", 25));
+
+        assertNotEquals(j.getTransactions(), b);
     }
 }
