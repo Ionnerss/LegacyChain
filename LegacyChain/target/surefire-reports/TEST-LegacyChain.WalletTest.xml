@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.2" name="LegacyChain.TransactionTest" time="0.09" tests="4" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.2" name="LegacyChain.WalletTest" time="0.137" tests="9" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="26"/>
     <property name="sun.jnu.encoding" value="UTF-8"/>
@@ -59,8 +59,13 @@
     <property name="socksNonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="java.class.version" value="70.0"/>
   </properties>
-  <testcase name="testValidTransaction" classname="LegacyChain.TransactionTest" time="0.061"/>
-  <testcase name="testNegativeAmount" classname="LegacyChain.TransactionTest" time="0.004"/>
-  <testcase name="testNullSender" classname="LegacyChain.TransactionTest" time="0.003"/>
-  <testcase name="testZeroAmount" classname="LegacyChain.TransactionTest" time="0.003"/>
+  <testcase name="testSignatureAndDiffVerif" classname="LegacyChain.WalletTest" time="0.008"/>
+  <testcase name="testMultipleWalletKeysValidity" classname="LegacyChain.WalletTest" time="0.085"/>
+  <testcase name="testPublicKeyIsNotNull" classname="LegacyChain.WalletTest" time="0.002"/>
+  <testcase name="testSignatureAndPublicKeyVerif" classname="LegacyChain.WalletTest" time="0.011"/>
+  <testcase name="testWalletCreation" classname="LegacyChain.WalletTest" time="0.003"/>
+  <testcase name="testSignatureContainsBytes" classname="LegacyChain.WalletTest" time="0.004"/>
+  <testcase name="testSignatureNotNull" classname="LegacyChain.WalletTest" time="0.004"/>
+  <testcase name="testTwoDifferentPublicKeys" classname="LegacyChain.WalletTest" time="0.003"/>
+  <testcase name="testSignatureAndDiffPublicKey" classname="LegacyChain.WalletTest" time="0.007"/>
 </testsuite>
