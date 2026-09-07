@@ -13,6 +13,7 @@ public class TransactionTest {
         assertEquals(sender.getPublicKey(), t.getSender());
         assertEquals(recipient.getPublicKey(), t.getRecipient());
         assertEquals(100, t.getAmount());
+        assertTrue(t.isValid());
     }
 
     @Test
@@ -33,14 +34,14 @@ public class TransactionTest {
             });
     }
 
-    // @Test 
-    // void testNullSender() {
-    //     assertThrows(IllegalArgumentException.class, 
-    //         () -> {
-    //             Wallet sender = new Wallet(), recipient = new Wallet();
-    //             Transaction t = sender.createTransaction(null, 100);
-    //         });
-    // }
+    @Test 
+    void testNullSender() {
+        assertThrows(IllegalArgumentException.class, 
+            () -> {
+                Wallet sender = new Wallet(), recipient = new Wallet();
+                Transaction t = new Transaction(null, recipient.getPublicKey(), 100, sender.sign(null));
+            });
+    }
 
     // @Test
     // void testNullRecipient() {
