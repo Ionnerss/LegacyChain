@@ -60,4 +60,13 @@ public class WalletTest {
         Wallet w = new Wallet();
         assertTrue(w.sign("hello").length > 0);
     }
+
+    @Test
+    void testSREquals() {
+        assertThrows(IllegalArgumentException.class,
+            () -> {
+                Wallet w = new Wallet();
+                Transaction t = w.createTransaction(w.getPublicKey(), 10);
+            });
+    }
 }

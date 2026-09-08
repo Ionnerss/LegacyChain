@@ -26,6 +26,12 @@ public class Blockchain {
     public Block getLatestBlock() { return chain.get(chain.size() - 1); }
 
     public Block addBlock(List<Transaction> transactions) {
+        if (transactions == null) throw new IllegalArgumentException("Invalid transactions list.");
+        
+        for (Transaction t : transactions)
+            if (t == null) throw new IllegalArgumentException("Invalid transaction in block.");
+            else if (!t.isValid()) throw new IllegalArgumentException("Invalid transaction in block.");
+
         int index = chain.size() - 1;
         String lastHash = chain.get(index).getHash();
 

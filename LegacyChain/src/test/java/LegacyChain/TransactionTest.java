@@ -39,77 +39,55 @@ public class TransactionTest {
         assertThrows(IllegalArgumentException.class, 
             () -> {
                 Wallet sender = new Wallet(), recipient = new Wallet();
-                Transaction t = new Transaction(null, recipient.getPublicKey(), 100, sender.sign(null));
+                Transaction t = new Transaction(null, recipient.getPublicKey(), 100, sender.sign("yolo"));
             });
     }
 
-    // @Test
-    // void testNullRecipient() {
-    //     //Assert
-    //     assertThrows(IllegalArgumentException.class, 
-    //         () -> new Transaction("Alex", null, 10));
-    // }
+    @Test
+    void testNullRecipient() {
+        assertThrows(IllegalArgumentException.class, 
+            () -> {
+                Wallet sender = new Wallet();
+                Transaction t = new Transaction(sender.getPublicKey(), null, 100, sender.sign("yolo"));
+            });
+    }
 
-    // @Test
-    // void testEmptySender() {
-    //     //Assert
-    //     assertThrows(IllegalArgumentException.class, 
-    //         () -> new Transaction("", "Bob", 10));
-    // }
+    @Test
+    void testSREquals() {
+        assertThrows(IllegalArgumentException.class, 
+            () -> {
+                Wallet sender = new Wallet();
+                Transaction t = new Transaction(sender.getPublicKey(), sender.getPublicKey(), 100, sender.sign("yolo"));
+            });
+    }
 
-    // @Test
-    // void testBlankSender() {
-    //     //Assert
-    //     assertThrows(IllegalArgumentException.class, 
-    //         () -> new Transaction("   ", "Bob", 10));
-    // }
+    @Test
+    void testSmallestAmount() {
+        Wallet w = new Wallet(), j = new Wallet();
+        assertDoesNotThrow(() -> new Transaction(w.getPublicKey(), j.getPublicKey(), 1, w.sign("yolo")));
+    }
 
-    // @Test
-    // void testEmptyRecipient() {
-    //     //Assert
-    //     assertThrows(IllegalArgumentException.class, 
-    //         () -> new Transaction("Alex", "", 10));
-    // }
+    @Test
+    void testLargeAmount() {
+        Wallet w = new Wallet(), j = new Wallet();
+        assertDoesNotThrow(() -> new Transaction(w.getPublicKey(), j.getPublicKey(), 9223372036857L, w.sign("yolo")));
+    }
 
-    // @Test
-    // void testBlankRecipient() {
-    //     //Assert
-    //     assertThrows(IllegalArgumentException.class, 
-    //         () -> new Transaction("Bob", "   ", 10));
-    // }
+    @Test
+    void testTransactionHashDeterminism() {
+        Wallet w = new Wallet(), j = new Wallet();
+        Transaction a = new Transaction(w.getPublicKey(), j.getPublicKey(), 34, w.sign("yolo"));
+        Transaction b = new Transaction(w.getPublicKey(), j.getPublicKey(), 34, w.sign("yolo"));
 
-    // @Test
-    // void testSREquals() {
-    //     //Assert
-    //     assertThrows(IllegalArgumentException.class, 
-    //         () -> new Transaction("Bob", "Bob", 10));
-    // }
+        assertEquals(a.calculateHash(), b.calculateHash());
+    }
 
-    // @Test
-    // void testSmallestAmount() {
-    //     //Assert
-    //     assertDoesNotThrow(() -> new Transaction("Bob", "Alex", 1));
-    // }
+    @Test
+    void testTransactionModsChangeHash() {
+        Wallet w = new Wallet(), j = new Wallet(), k = new Wallet();
+        Transaction a = new Transaction(w.getPublicKey(), j.getPublicKey(), 34, w.sign("yolo"));
+        Transaction b = new Transaction(k.getPublicKey(), j.getPublicKey(), 34, w.sign("yolo"));
 
-    // @Test
-    // void testLargeAmount() {
-    //     //Assert
-    //     assertDoesNotThrow(() -> new Transaction("Bob", "Alex", 9223372036857L));
-    // }
-
-    // @Test
-    // void testTransactionHashDeterminism() {
-    //     Transaction a = new Transaction("Bob", "Bill", 34);
-    //     Transaction b = new Transaction("Bob", "Bill", 34);
-
-    //     assertEquals(a.calculateHash(), b.calculateHash());
-    // }
-
-    // @Test
-    // void testTransactionModsChangeHash() {
-    //     Transaction a = new Transaction("Julie", "Bill", 34);
-    //     Transaction b = new Transaction("Bob", "Bill", 34);
-
-    //     assertNotEquals(a.calculateHash(), b.calculateHash());
-    // }
+        assertNotEquals(a.calculateHash(), b.calculateHash());
+    }
 }

@@ -47,11 +47,11 @@ public class Wallet {
     }
 
     public Transaction createTransaction(PublicKey recipient, long amount) {
-        if (recipient == null)
+        if (recipient == null || recipient == publicKey)
             throw new IllegalArgumentException("Invalid recipient key.");
         if (amount <= 0)
             throw new IllegalArgumentException("Invalid transaction amount.");
-        
+
         String data = Transaction.signingData(this.publicKey, recipient, amount);
         byte[] signedData = sign(data);
 
