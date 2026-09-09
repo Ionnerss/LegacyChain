@@ -143,4 +143,50 @@ public class BlockchainTest {
         assertNotEquals(s.getTransactions(), b);
         assertEquals(2, s.getTransactions().size());
     }
+
+    @Test 
+    void testAcceptedBlock() {
+        Blockchain k = new Blockchain(2);
+
+        ArrayList<Transaction> b = new ArrayList<Transaction>(List.of(
+            new Wallet().createTransaction(new Wallet().getPublicKey(), 100),
+            new Wallet().createTransaction(new Wallet().getPublicKey(), 150),
+            new Wallet().createTransaction(new Wallet().getPublicKey(), 200),
+            new Wallet().createTransaction(new Wallet().getPublicKey(), 10),
+            new Wallet().createTransaction(new Wallet().getPublicKey(), 15)
+        ));
+
+        assertDoesNotThrow(() -> k.addBlock(b));
+        assertEquals(2, k.size());
+    }
+
+    @Test 
+    void testInvalidTransaction() {
+        Blockchain k = new Blockchain(2);
+        ArrayList<Transaction> b = new ArrayList<Transaction>();
+
+        Wallet w = new Wallet();
+        b.add(new Transaction(new Wallet().getPublicKey(), new Wallet().getPublicKey(), 100, w.sign("yolo")));
+
+        assertThrows(IllegalArgumentException.class, () -> k.addBlock(b));
+    }
+
+    @Test 
+    void testTransactionsOneInvalid() {
+        Blockchain k = new Blockchain(2);
+        ArrayList<Transaction> b = new ArrayList<Transaction>(List.of(
+            new Wallet().createTransaction(new Wallet().getPublicKey(), 100),
+            new Wallet().createTransaction(new Wallet().getPublicKey(), 150),
+            new Wallet().createTransaction(new Wallet().getPublicKey(), 200)
+        ));
+        b.add(null);
+        b.add(new Wallet().createTransaction(new Wallet().getPublicKey(), 15));
+
+        assertThrows(IllegalArgumentException.class,
+            () -> k.addBlock(b));
+        assertEquals(1, k.size());
+    }
+
+    
+
 }

@@ -28,9 +28,11 @@ public class Blockchain {
     public Block addBlock(List<Transaction> transactions) {
         if (transactions == null) throw new IllegalArgumentException("Invalid transactions list.");
         
-        for (Transaction t : transactions)
+        for (Transaction t : transactions) {
             if (t == null) throw new IllegalArgumentException("Invalid transaction in block.");
             else if (!t.isValid()) throw new IllegalArgumentException("Invalid transaction in block.");
+            
+        }
 
         int index = chain.size() - 1;
         String lastHash = chain.get(index).getHash();
@@ -45,7 +47,9 @@ public class Blockchain {
         String target = "0".repeat(difficulty);
         Block genesis = chain.get(0);
         if (!genesis.getHash().equals(genesis.calculateHash()) 
-            || !genesis.getHash().startsWith(target)) 
+            || !genesis.getHash().startsWith(target)
+            || !genesis.getTransactions().isEmpty()
+            || !genesis.getPreviousHash().equals("0")) 
             return false;
 
         int i = 1;
@@ -62,6 +66,9 @@ public class Blockchain {
                 || !currBlock.getHash().startsWith(target))
                 return false;
             
+            for (Transaction t : currBlock.getTransactions())
+                if (t == null || !t.isValid()) return false;
+
             i++;
         }
         return true;
