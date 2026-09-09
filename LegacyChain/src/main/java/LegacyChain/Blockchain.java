@@ -49,7 +49,7 @@ public class Blockchain {
         if (!genesis.getHash().equals(genesis.calculateHash()) 
             || !genesis.getHash().startsWith(target)
             || !genesis.getTransactions().isEmpty()
-            || !genesis.getPreviousHash().equals("0")) 
+            || !"0".equals(genesis.getPreviousHash())) 
             return false;
 
         int i = 1;
