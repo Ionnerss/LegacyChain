@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.2" name="LegacyChain.WalletTest" time="0.05" tests="10" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.2" name="LegacyChain.WalletTest" time="0.065" tests="10" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="26"/>
     <property name="sun.jnu.encoding" value="UTF-8"/>
@@ -12,7 +12,7 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="CA"/>
     <property name="sun.boot.library.path" value="/opt/homebrew/Cellar/openjdk/26.0.2.1/libexec/openjdk.jdk/Contents/Home/lib"/>
-    <property name="sun.java.command" value="/Users/catalin/Personal-Projects/LegacyChain/target/surefire/surefirebooter-20260908123508618_3.jar /Users/catalin/Personal-Projects/LegacyChain/target/surefire 2026-09-08T12-35-08_572-jvmRun1 surefire-20260908123508618_1tmp surefire_0-20260908123508618_2tmp"/>
+    <property name="sun.java.command" value="/Users/catalin/Personal-Projects/LegacyChain/target/surefire/surefirebooter-20260908185603207_3.jar /Users/catalin/Personal-Projects/LegacyChain/target/surefire 2026-09-08T18-56-03_141-jvmRun1 surefire-20260908185603207_1tmp surefire_0-20260908185603207_2tmp"/>
     <property name="http.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="jdk.debug" value="release"/>
     <property name="surefire.test.class.path" value="/Users/catalin/Personal-Projects/LegacyChain/target/test-classes:/Users/catalin/Personal-Projects/LegacyChain/target/classes:/Users/catalin/.m2/repository/org/junit/jupiter/junit-jupiter/5.14.2/junit-jupiter-5.14.2.jar:/Users/catalin/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.14.2/junit-jupiter-api-5.14.2.jar:/Users/catalin/.m2/repository/org/opentest4j/opentest4j/1.3.0/opentest4j-1.3.0.jar:/Users/catalin/.m2/repository/org/junit/platform/junit-platform-commons/1.14.2/junit-platform-commons-1.14.2.jar:/Users/catalin/.m2/repository/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2.jar:/Users/catalin/.m2/repository/org/junit/jupiter/junit-jupiter-params/5.14.2/junit-jupiter-params-5.14.2.jar:/Users/catalin/.m2/repository/org/junit/jupiter/junit-jupiter-engine/5.14.2/junit-jupiter-engine-5.14.2.jar:/Users/catalin/.m2/repository/org/junit/platform/junit-platform-engine/1.14.2/junit-platform-engine-1.14.2.jar:"/>
@@ -29,7 +29,7 @@
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
     <property name="apple.awt.application.name" value="ForkedBooter"/>
-    <property name="surefire.real.class.path" value="/Users/catalin/Personal-Projects/LegacyChain/target/surefire/surefirebooter-20260908123508618_3.jar"/>
+    <property name="surefire.real.class.path" value="/Users/catalin/Personal-Projects/LegacyChain/target/surefire/surefirebooter-20260908185603207_3.jar"/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="ftp.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="java.runtime.version" value="26.0.2.1"/>
@@ -60,13 +60,13 @@
     <property name="java.class.version" value="70.0"/>
   </properties>
   <testcase name="testSignatureAndDiffVerif" classname="LegacyChain.WalletTest" time="0.003"/>
-  <testcase name="testMultipleWalletKeysValidity" classname="LegacyChain.WalletTest" time="0.032"/>
+  <testcase name="testMultipleWalletKeysValidity" classname="LegacyChain.WalletTest" time="0.043"/>
   <testcase name="testPublicKeyIsNotNull" classname="LegacyChain.WalletTest" time="0.001"/>
   <testcase name="testSignatureAndPublicKeyVerif" classname="LegacyChain.WalletTest" time="0.003"/>
   <testcase name="testWalletCreation" classname="LegacyChain.WalletTest" time="0.001"/>
   <testcase name="testSignatureContainsBytes" classname="LegacyChain.WalletTest" time="0.001"/>
   <testcase name="testSignatureNotNull" classname="LegacyChain.WalletTest" time="0.001"/>
-  <testcase name="testSREquals" classname="LegacyChain.WalletTest" time="0.0"/>
+  <testcase name="testSREquals" classname="LegacyChain.WalletTest" time="0.001"/>
   <testcase name="testTwoDifferentPublicKeys" classname="LegacyChain.WalletTest" time="0.001"/>
-  <testcase name="testSignatureAndDiffPublicKey" classname="LegacyChain.WalletTest" time="0.002"/>
+  <testcase name="testSignatureAndDiffPublicKey" classname="LegacyChain.WalletTest" time="0.003"/>
 </testsuite>
