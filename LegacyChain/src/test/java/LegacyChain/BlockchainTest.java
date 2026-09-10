@@ -187,6 +187,32 @@ public class BlockchainTest {
         assertEquals(1, k.size());
     }
 
-    
+    @Test 
+    void testInvalidOwner() {
+        Blockchain k = new Blockchain(2);
+        assertThrows(IllegalArgumentException.class, () -> k.getBalance(null));
+    }
+
+    @Test 
+    void testValidWallet() {
+        Blockchain k = new Blockchain(2);
+        Wallet w = new Wallet();
+        assertEquals(0, k.getBalance(w.getPublicKey()));
+    }
+
+    @Test
+    void testWalletDoesNotAppearInAnyTransactions() {
+        Blockchain k = new Blockchain(2);
+        Wallet w = new Wallet();
+
+        k.addBlock(new ArrayList<Transaction>(List.of(
+            new Wallet().createTransaction(new Wallet().getPublicKey(), 700),
+            new Wallet().createTransaction(new Wallet().getPublicKey(), 150),
+            new Wallet().createTransaction(new Wallet().getPublicKey(), 320)
+        )));
+
+        assertEquals(0, k.getBalance(w.getPublicKey()));
+    }
+
 
 }

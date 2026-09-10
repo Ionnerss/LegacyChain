@@ -1,5 +1,6 @@
 package LegacyChain;
 
+import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,5 +73,20 @@ public class Blockchain {
             i++;
         }
         return true;
+    }
+
+    public long getBalance(PublicKey owner) {
+        if (owner == null) throw new IllegalArgumentException("Invalid public key.");
+        long balance = 0;
+
+        for (Block b : chain) {
+            for (Transaction t : b.getTransactions()) {
+                if (t.getSender().equals(owner))
+                    balance -= t.getAmount();
+                if (t.getRecipient().equals(owner))
+                    balance += t.getAmount();
+            }
+        }
+        return balance;  
     }
 }
