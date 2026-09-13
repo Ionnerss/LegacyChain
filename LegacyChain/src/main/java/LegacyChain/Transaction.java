@@ -9,21 +9,36 @@ public class Transaction {
     private final PublicKey recipient;
     private final long amount;
     private final byte[] signature;
+    private TransactionType type;
 
-    public Transaction(PublicKey sender, PublicKey recipient, long amount, byte[] signature) {
-        if (sender == null || recipient == null || sender.equals(recipient))
-            throw new IllegalArgumentException("Invalid transaction data.");
-        if (amount <= 0)
-            throw new IllegalArgumentException("Invalid transaction data.");
-        
-        this.sender = sender;
+    //REWARD since every wallet starts at 0, must be able to mine
+    private enum TransactionType {
+        NORMAL, REWARD
+    }
+
+    public Transaction(PublicKey sender, PublicKey recipient, long amount, byte[] signature, TransactionType type) {
+        if (recipient == null || amount <= 0)
+                throw new IllegalArgumentException("Invalid transaction data.");
+
         this.recipient = recipient;
         this.amount = amount;
 
-        if (signature == null || signature.length == 0)
-            throw new IllegalArgumentException("Invalid signature data.");
-
-        this.signature = Arrays.copyOf(signature, signature.length);
+        if (type == TransactionType.NORMAL) {
+            if (sender == null || sender.equals(recipient)) throw new IllegalArgumentException("Invalid transaction data.");
+            this.sender = sender;
+    
+            if (signature == null || signature.length == 0)
+                throw new IllegalArgumentException("Invalid signature data.");
+    
+            this.signature = Arrays.copyOf(signature, signature.length);
+            this.type = type;
+        }
+        else if (type == TransactionType.REWARD) {
+            this.sender = null;
+            this.signature = null;
+            this.type = type;
+        }
+        else throw new IllegalArgumentException("Invalid transaction type.");
     }
 
     public PublicKey getSender() { return this.sender; }

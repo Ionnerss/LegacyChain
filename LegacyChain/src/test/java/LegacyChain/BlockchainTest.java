@@ -213,6 +213,4 @@ public class BlockchainTest {
 
         assertEquals(0, k.getBalance(w.getPublicKey()));
     }
-
-
 }
