@@ -1,4 +1,93 @@
 -------------------------------------------------------------------------------
 Test set: LegacyChain.BlockchainTest
 -------------------------------------------------------------------------------
-Tests run: 16, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.309 s -- in LegacyChain.BlockchainTest
+Tests run: 17, Failures: 1, Errors: 9, Skipped: 0, Time elapsed: 0.242 s <<< FAILURE! -- in LegacyChain.BlockchainTest
+LegacyChain.BlockchainTest.testProofOfWork -- Time elapsed: 0.030 s <<< ERROR!
+java.lang.IllegalArgumentException: Invalid transaction in block.
+	at LegacyChain.Blockchain.addBlock(Blockchain.java:53)
+	at LegacyChain.BlockchainTest.testProofOfWork(BlockchainTest.java:120)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1612)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1612)
+
+LegacyChain.BlockchainTest.testWalletDoesNotAppearInAnyTransactions -- Time elapsed: 0.029 s <<< ERROR!
+java.lang.IllegalArgumentException: Invalid transaction in block.
+	at LegacyChain.Blockchain.addBlock(Blockchain.java:53)
+	at LegacyChain.BlockchainTest.testWalletDoesNotAppearInAnyTransactions(BlockchainTest.java:208)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1612)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1612)
+
+LegacyChain.BlockchainTest.testAddBlockIncreaseSize -- Time elapsed: 0.009 s <<< ERROR!
+java.lang.IllegalArgumentException: Invalid transaction in block.
+	at LegacyChain.Blockchain.addBlock(Blockchain.java:53)
+	at LegacyChain.BlockchainTest.testAddBlockIncreaseSize(BlockchainTest.java:54)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1612)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1612)
+
+LegacyChain.BlockchainTest.testTwoMinedBlocks -- Time elapsed: 0.013 s <<< ERROR!
+java.lang.IllegalArgumentException: Invalid transaction in block.
+	at LegacyChain.Blockchain.addBlock(Blockchain.java:53)
+	at LegacyChain.BlockchainTest.testTwoMinedBlocks(BlockchainTest.java:235)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1612)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1612)
+
+LegacyChain.BlockchainTest.testLinkedBlocksHashes -- Time elapsed: 0.010 s <<< ERROR!
+java.lang.IllegalArgumentException: Invalid transaction in block.
+	at LegacyChain.Blockchain.addBlock(Blockchain.java:53)
+	at LegacyChain.BlockchainTest.testLinkedBlocksHashes(BlockchainTest.java:77)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1612)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1612)
+
+LegacyChain.BlockchainTest.testAcceptedBlock -- Time elapsed: 0.022 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Unexpected exception thrown: java.lang.IllegalArgumentException: Invalid transaction in block.
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:152)
+	at org.junit.jupiter.api.AssertDoesNotThrow.createAssertionFailedError(AssertDoesNotThrow.java:84)
+	at org.junit.jupiter.api.AssertDoesNotThrow.assertDoesNotThrow(AssertDoesNotThrow.java:75)
+	at org.junit.jupiter.api.AssertDoesNotThrow.assertDoesNotThrow(AssertDoesNotThrow.java:58)
+	at org.junit.jupiter.api.Assertions.assertDoesNotThrow(Assertions.java:3259)
+	at LegacyChain.BlockchainTest.testAcceptedBlock(BlockchainTest.java:159)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1612)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1612)
+Caused by: java.lang.IllegalArgumentException: Invalid transaction in block.
+	at LegacyChain.Blockchain.addBlock(Blockchain.java:53)
+	at LegacyChain.BlockchainTest.lambda$1(BlockchainTest.java:159)
+	at org.junit.jupiter.api.AssertDoesNotThrow.assertDoesNotThrow(AssertDoesNotThrow.java:71)
+	... 6 more
+
+LegacyChain.BlockchainTest.testRandomWalletBalance -- Time elapsed: 0.012 s <<< ERROR!
+java.lang.IllegalArgumentException: Invalid transaction in block.
+	at LegacyChain.Blockchain.addBlock(Blockchain.java:53)
+	at LegacyChain.BlockchainTest.testRandomWalletBalance(BlockchainTest.java:253)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1612)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1612)
+
+LegacyChain.BlockchainTest.testOneMinedBlock -- Time elapsed: 0.013 s <<< ERROR!
+java.lang.IllegalArgumentException: Invalid transaction in block.
+	at LegacyChain.Blockchain.addBlock(Blockchain.java:53)
+	at LegacyChain.BlockchainTest.testOneMinedBlock(BlockchainTest.java:222)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1612)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1612)
+
+LegacyChain.BlockchainTest.testMultipleBlocksChainIsValid -- Time elapsed: 0.008 s <<< ERROR!
+java.lang.IllegalArgumentException: Invalid transaction in block.
+	at LegacyChain.Blockchain.addBlock(Blockchain.java:53)
+	at LegacyChain.BlockchainTest.testMultipleBlocksChainIsValid(BlockchainTest.java:95)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1612)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1612)
+
+LegacyChain.BlockchainTest.testBlockTransactionListImmutability -- Time elapsed: 0.010 s <<< ERROR!
+java.lang.IllegalArgumentException: Invalid transaction in block.
+	at LegacyChain.Blockchain.addBlock(Blockchain.java:53)
+	at LegacyChain.BlockchainTest.testBlockTransactionListImmutability(BlockchainTest.java:139)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1612)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1612)
+

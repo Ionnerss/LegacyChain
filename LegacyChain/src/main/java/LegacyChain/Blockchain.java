@@ -2,7 +2,9 @@ package LegacyChain;
 
 import java.security.PublicKey;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import LegacyChain.Transaction.TransactionType;
 
@@ -33,10 +35,25 @@ public class Blockchain {
         if (transactions == null) throw new IllegalArgumentException("Invalid transactions list.");
         if (miner == null) throw new IllegalArgumentException("Invalid miner key.");
         
+        Map<PublicKey, Long> tempBalances = new HashMap<>();
         for (Transaction t : transactions) {
             if (t == null) throw new IllegalArgumentException("Invalid transaction in block.");
             else if (t.getType() == TransactionType.REWARD) throw new IllegalArgumentException("Invalid transaction in block.");
             else if (!t.isValid()) throw new IllegalArgumentException("Invalid transaction in block.");
+
+            if (!tempBalances.containsKey(t.getSender()))
+                tempBalances.put(t.getSender(), getBalance(t.getSender()));
+            if (!tempBalances.containsKey(t.getRecipient()))
+                tempBalances.put(t.getRecipient(), getBalance(t.getRecipient()));
+
+            long senderBalance = tempBalances.get(t.getSender());
+            long recipientBalance = tempBalances.get(t.getRecipient());
+
+            if (senderBalance < t.getAmount()) 
+                throw new IllegalArgumentException("Invalid transaction in block.");
+
+            tempBalances.put(t.getSender(), senderBalance - t.getAmount());
+            tempBalances.put(t.getRecipient(), recipientBalance + t.getAmount());
         }
 
         int index = chain.size() - 1;
@@ -52,6 +69,29 @@ public class Blockchain {
         return nBlock;
     }
 
+    // private void validateProposedTransactions(List<Transaction> transactions) {
+    //     Map<PublicKey, Long> tempBalances = new HashMap<>();
+    //     for (Transaction t : transactions) {
+    //         if (t == null) throw new IllegalArgumentException("Invalid transaction in block.");
+    //         else if (t.getType() == TransactionType.REWARD) throw new IllegalArgumentException("Invalid transaction in block.");
+    //         else if (!t.isValid()) throw new IllegalArgumentException("Invalid transaction in block.");
+
+    //         if (!tempBalances.containsKey(t.getSender()))
+    //             tempBalances.put(t.getSender(), getBalance(t.getSender()));
+    //         if (!tempBalances.containsKey(t.getRecipient()))
+    //             tempBalances.put(t.getRecipient(), getBalance(t.getRecipient()));
+
+    //         long senderBalance = tempBalances.get(t.getSender());
+    //         long recipientBalance = tempBalances.get(t.getRecipient());
+
+    //         if (senderBalance < t.getAmount()) 
+    //             throw new IllegalArgumentException("Invalid transaction in block.");
+
+    //         tempBalances.put(t.getSender(), senderBalance - t.getAmount());
+    //         tempBalances.put(t.getRecipient(), recipientBalance + t.getAmount());
+    //     }
+    // }
+
     public boolean isValid() {
         String target = "0".repeat(difficulty);
         Block genesis = chain.get(0);
@@ -61,15 +101,13 @@ public class Blockchain {
             || !"0".equals(genesis.getPreviousHash()))
             return false;
 
+        Map<PublicKey, Long> tempBalances = new HashMap<>();
         int i = 1;
         while (i < chain.size()) {
+            int rewardCout = 0;
             Block currBlock = chain.get(i);
             Block prevBlock = chain.get(i - 1);
 
-            /*
-            - !currBlock.hash.equals(currBlock.calculateHash() checks if data has been modified | protects block's own contents
-            - !currBlock.previousHash.equals(prevBlock.hash) checks if full block has been modified and rehashed | protects link to prev block
-            */
             if (!currBlock.getHash().equals(currBlock.calculateHash()) 
                 || !currBlock.getPreviousHash().equals(prevBlock.getHash()) 
                 || !currBlock.getHash().startsWith(target))
@@ -77,15 +115,29 @@ public class Blockchain {
 
             for (Transaction t : currBlock.getTransactions()) {
                 if (t == null) return false;
-                else if (t.getType() == TransactionType.NORMAL) 
+                else if (t.getType() == TransactionType.NORMAL) {
                     if (!t.isValid()) return false;
-                else if (t.getType() == TransactionType.REWARD)
+    
+                    long senderBalance = tempBalances.getOrDefault(t.getSender(), (long) 0);
+                    long recipientBalance = tempBalances.getOrDefault(t.getRecipient(), (long) 0);
+    
+                    if (senderBalance < t.getAmount()) return false;
+    
+                    tempBalances.put(t.getSender(), senderBalance - t.getAmount());
+                    tempBalances.put(t.getRecipient(), recipientBalance + t.getAmount());
+                }
+                else if (t.getType() == TransactionType.REWARD) {
                     if (currBlock.getTransactions().indexOf(t) != currBlock.getTransactions().size() - 1
-                        || t.getAmount() != BLOCK_REWARD)
+                        || t.getAmount() != BLOCK_REWARD || !t.isValid())
                         return false;
+                    
+                    rewardCout++;
+                    long currMinerBalance = tempBalances.getOrDefault(t.getRecipient(), (long) 0);
+                    tempBalances.put(t.getRecipient(), currMinerBalance + BLOCK_REWARD);
+                }
                 else return false;
             }
-
+            if (rewardCout != 1) return false;
             i++;
         }
         return true;

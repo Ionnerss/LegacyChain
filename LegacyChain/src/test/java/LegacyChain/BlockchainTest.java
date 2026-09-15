@@ -118,7 +118,7 @@ public class BlockchainTest {
         //Act:
         Wallet w = new Wallet();
         Block j = k.addBlock(new ArrayList<Transaction>(
-            List.of(w.createTransaction(new Wallet().getPublicKey(), 100))
+            List.of(w.createTransaction(new Wallet().getPublicKey(), 0))
         ), new Wallet().getPublicKey());
 
         //Assert:
@@ -245,16 +245,21 @@ public class BlockchainTest {
         assertEquals(100, k.getBalance(miner.getPublicKey()));
     }
 
-    // @Test
-    // void testRandomWalletBalance() {
-    //     Blockchain k = new Blockchain(2);
-    //     Wallet miner = new Wallet();
+    @Test
+    void testRandomWalletBalance() {
+        Blockchain k = new Blockchain(2);
+        Wallet miner = new Wallet(), random = new Wallet();
 
-    //     k.addBlock(new ArrayList<Transaction>(List.of(
-    //         new Wallet().createTransaction(new Wallet().getPublicKey(), 700),
-    //         new Wallet().createTransaction(new Wallet().getPublicKey(), 150)
-    //     )), miner.getPublicKey());
+        k.addBlock(new ArrayList<Transaction>(List.of(
+            new Wallet().createTransaction(new Wallet().getPublicKey(), 700),
+            new Wallet().createTransaction(new Wallet().getPublicKey(), 150)
+        )), miner.getPublicKey());
 
-    //     assertEquals(-650, miner);
-    // }
+        k.addBlock(new ArrayList<Transaction>(List.of(
+            new Wallet().createTransaction(new Wallet().getPublicKey(), 700),
+            new Wallet().createTransaction(new Wallet().getPublicKey(), 150)
+        )), miner.getPublicKey());
+
+        assertEquals(0, k.getBalance(random.getPublicKey()));
+    }
 }
