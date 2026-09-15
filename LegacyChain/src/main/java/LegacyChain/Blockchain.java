@@ -4,9 +4,12 @@ import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.List;
 
+import LegacyChain.Transaction.TransactionType;
+
 public class Blockchain {
     private ArrayList<Block> chain;
     private int difficulty;
+    private final int BLOCK_REWARD = 50;
 
     public Blockchain(int difficulty) {
         this.chain = new ArrayList<>();
@@ -26,19 +29,24 @@ public class Blockchain {
 
     public Block getLatestBlock() { return chain.get(chain.size() - 1); }
 
-    public Block addBlock(List<Transaction> transactions) {
+    public Block addBlock(List<Transaction> transactions, PublicKey miner) {
         if (transactions == null) throw new IllegalArgumentException("Invalid transactions list.");
+        if (miner == null) throw new IllegalArgumentException("Invalid miner key.");
         
         for (Transaction t : transactions) {
             if (t == null) throw new IllegalArgumentException("Invalid transaction in block.");
+            else if (t.getType() == TransactionType.REWARD) throw new IllegalArgumentException("Invalid transaction in block.");
             else if (!t.isValid()) throw new IllegalArgumentException("Invalid transaction in block.");
-            
         }
 
         int index = chain.size() - 1;
         String lastHash = chain.get(index).getHash();
 
-        Block nBlock = new Block(transactions, lastHash);
+        List<Transaction> tCopy = new ArrayList<>(transactions);
+        Transaction minerRewardTrans = new Transaction(miner, BLOCK_REWARD);
+        tCopy.add(minerRewardTrans);
+
+        Block nBlock = new Block(tCopy, lastHash);
         nBlock.mineBlock(difficulty);
         chain.add(nBlock);
         return nBlock;
@@ -50,7 +58,7 @@ public class Blockchain {
         if (!genesis.getHash().equals(genesis.calculateHash()) 
             || !genesis.getHash().startsWith(target)
             || !genesis.getTransactions().isEmpty()
-            || !"0".equals(genesis.getPreviousHash())) 
+            || !"0".equals(genesis.getPreviousHash()))
             return false;
 
         int i = 1;
@@ -66,9 +74,17 @@ public class Blockchain {
                 || !currBlock.getPreviousHash().equals(prevBlock.getHash()) 
                 || !currBlock.getHash().startsWith(target))
                 return false;
-            
-            for (Transaction t : currBlock.getTransactions())
-                if (t == null || !t.isValid()) return false;
+
+            for (Transaction t : currBlock.getTransactions()) {
+                if (t == null) return false;
+                else if (t.getType() == TransactionType.NORMAL) 
+                    if (!t.isValid()) return false;
+                else if (t.getType() == TransactionType.REWARD)
+                    if (currBlock.getTransactions().indexOf(t) != currBlock.getTransactions().size() - 1
+                        || t.getAmount() != BLOCK_REWARD)
+                        return false;
+                else return false;
+            }
 
             i++;
         }
@@ -81,10 +97,15 @@ public class Blockchain {
 
         for (Block b : chain) {
             for (Transaction t : b.getTransactions()) {
-                if (t.getSender().equals(owner))
-                    balance -= t.getAmount();
-                if (t.getRecipient().equals(owner))
-                    balance += t.getAmount();
+                if (t.getType() == TransactionType.REWARD)
+                    if (t.getRecipient().equals(owner))
+                        balance += t.getAmount();
+                else if (t.getType() == TransactionType.NORMAL) {
+                    if (t.getSender().equals(owner))
+                        balance -= t.getAmount();
+                    if (t.getRecipient().equals(owner))
+                        balance += t.getAmount();
+                }
             }
         }
         return balance;  

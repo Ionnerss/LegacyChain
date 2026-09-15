@@ -50,10 +50,10 @@ public class BlockchainTest {
         Blockchain k = new Blockchain(2);
 
         //Act:
-        Wallet w = new Wallet(), j = new Wallet();
+        Wallet w = new Wallet(), j = new Wallet(), miner = new Wallet();
         k.addBlock(new ArrayList<Transaction>(
             List.of(w.createTransaction(j.getPublicKey(), 100))
-        ));
+        ), miner.getPublicKey());
 
         /*
         Assert:
@@ -73,10 +73,10 @@ public class BlockchainTest {
             Add one block
             Keep the Block returned by addBlock()
         */
-        Wallet w = new Wallet(), j = new Wallet();
+        Wallet w = new Wallet(), j = new Wallet(), miner = new Wallet();
         Block b = k.addBlock(new ArrayList<Transaction>(
             List.of(w.createTransaction(j.getPublicKey(), 100))
-        ));
+        ), miner.getPublicKey());
 
         /*
         Assert:
@@ -94,16 +94,16 @@ public class BlockchainTest {
         Wallet w = new Wallet(), j = new Wallet();
         k.addBlock(new ArrayList<Transaction>(
             List.of(w.createTransaction(j.getPublicKey(), 100))
-        ));
+        ), new Wallet().getPublicKey());
         k.addBlock(new ArrayList<Transaction>(
             List.of(w.createTransaction(new Wallet().getPublicKey(), 100))
-        ));
+        ), new Wallet().getPublicKey());
         k.addBlock(new ArrayList<Transaction>(
             List.of(new Wallet().createTransaction(new Wallet().getPublicKey(), 150))
-        ));
+        ), new Wallet().getPublicKey());
         k.addBlock(new ArrayList<Transaction>(
             List.of(new Wallet().createTransaction(new Wallet().getPublicKey(), 200))
-        ));
+        ), new Wallet().getPublicKey());
 
         // Assert: genesis + 4 correctly linked and secure
         assertTrue(k.isValid());
@@ -119,7 +119,7 @@ public class BlockchainTest {
         Wallet w = new Wallet();
         Block j = k.addBlock(new ArrayList<Transaction>(
             List.of(w.createTransaction(new Wallet().getPublicKey(), 100))
-        ));
+        ), new Wallet().getPublicKey());
 
         //Assert:
         assertTrue(j.getHash().startsWith(target));
@@ -136,12 +136,12 @@ public class BlockchainTest {
             new Wallet().createTransaction(new Wallet().getPublicKey(), 150)
         ));
 
-        Block s = k.addBlock(b);
+        Block s = k.addBlock(b, new Wallet().getPublicKey());
 
         b.add(new Wallet().createTransaction(new Wallet().getPublicKey(), 300));
 
         assertNotEquals(s.getTransactions(), b);
-        assertEquals(2, s.getTransactions().size());
+        assertEquals(3, s.getTransactions().size()); //3 because of addition of the reward transaction for the miner
     }
 
     @Test 
@@ -156,7 +156,7 @@ public class BlockchainTest {
             new Wallet().createTransaction(new Wallet().getPublicKey(), 15)
         ));
 
-        assertDoesNotThrow(() -> k.addBlock(b));
+        assertDoesNotThrow(() -> k.addBlock(b, new Wallet().getPublicKey()));
         assertEquals(2, k.size());
     }
 
@@ -168,7 +168,7 @@ public class BlockchainTest {
         Wallet w = new Wallet();
         b.add(new Transaction(new Wallet().getPublicKey(), new Wallet().getPublicKey(), 100, w.sign("yolo")));
 
-        assertThrows(IllegalArgumentException.class, () -> k.addBlock(b));
+        assertThrows(IllegalArgumentException.class, () -> k.addBlock(b, new Wallet().getPublicKey()));
     }
 
     @Test 
@@ -183,7 +183,7 @@ public class BlockchainTest {
         b.add(new Wallet().createTransaction(new Wallet().getPublicKey(), 15));
 
         assertThrows(IllegalArgumentException.class,
-            () -> k.addBlock(b));
+            () -> k.addBlock(b, new Wallet().getPublicKey()));
         assertEquals(1, k.size());
     }
 
@@ -209,8 +209,52 @@ public class BlockchainTest {
             new Wallet().createTransaction(new Wallet().getPublicKey(), 700),
             new Wallet().createTransaction(new Wallet().getPublicKey(), 150),
             new Wallet().createTransaction(new Wallet().getPublicKey(), 320)
-        )));
+        )), new Wallet().getPublicKey());
 
         assertEquals(0, k.getBalance(w.getPublicKey()));
     }
+
+    @Test 
+    void testOneMinedBlock() {
+        Blockchain k = new Blockchain(2);
+        Wallet miner = new Wallet();
+
+        k.addBlock(new ArrayList<Transaction>(List.of(
+            new Wallet().createTransaction(new Wallet().getPublicKey(), 700),
+            new Wallet().createTransaction(new Wallet().getPublicKey(), 150)
+        )), miner.getPublicKey());
+
+        assertEquals(50, k.getBalance(miner.getPublicKey()));
+    }
+
+    @Test 
+    void testTwoMinedBlocks() {
+        Blockchain k = new Blockchain(2);
+        Wallet miner = new Wallet();
+
+        k.addBlock(new ArrayList<Transaction>(List.of(
+            new Wallet().createTransaction(new Wallet().getPublicKey(), 700),
+            new Wallet().createTransaction(new Wallet().getPublicKey(), 150)
+        )), miner.getPublicKey());
+
+        k.addBlock(new ArrayList<Transaction>(List.of(
+            new Wallet().createTransaction(new Wallet().getPublicKey(), 700),
+            new Wallet().createTransaction(new Wallet().getPublicKey(), 150)
+        )), miner.getPublicKey());
+
+        assertEquals(100, k.getBalance(miner.getPublicKey()));
+    }
+
+    // @Test
+    // void testRandomWalletBalance() {
+    //     Blockchain k = new Blockchain(2);
+    //     Wallet miner = new Wallet();
+
+    //     k.addBlock(new ArrayList<Transaction>(List.of(
+    //         new Wallet().createTransaction(new Wallet().getPublicKey(), 700),
+    //         new Wallet().createTransaction(new Wallet().getPublicKey(), 150)
+    //     )), miner.getPublicKey());
+
+    //     assertEquals(-650, miner);
+    // }
 }
