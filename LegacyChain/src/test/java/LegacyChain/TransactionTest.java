@@ -8,7 +8,7 @@ public class TransactionTest {
     void testValidTransaction() {
         Wallet sender = new Wallet(), recipient = new Wallet();
         long amount = 100;
-        Transaction t = sender.createTransaction(recipient.getPublicKey(), amount);
+        Transaction t = sender.createTransaction(recipient.getPublicKey(), amount, 0);
 
         assertEquals(sender.getPublicKey(), t.getSender());
         assertEquals(recipient.getPublicKey(), t.getRecipient());
@@ -21,7 +21,7 @@ public class TransactionTest {
         assertThrows(IllegalArgumentException.class, 
             () -> {
                 Wallet sender = new Wallet(), recipient = new Wallet();
-                Transaction t = sender.createTransaction(recipient.getPublicKey(), 0);
+                Transaction t = sender.createTransaction(recipient.getPublicKey(), 0, 0);
             });
     }
 
@@ -30,7 +30,7 @@ public class TransactionTest {
         assertThrows(IllegalArgumentException.class, 
             () -> {
                 Wallet sender = new Wallet(), recipient = new Wallet();
-                Transaction t = sender.createTransaction(recipient.getPublicKey(), -100);
+                Transaction t = sender.createTransaction(recipient.getPublicKey(), -100, 0);
             });
     }
 
@@ -39,7 +39,7 @@ public class TransactionTest {
         assertThrows(IllegalArgumentException.class, 
             () -> {
                 Wallet sender = new Wallet(), recipient = new Wallet();
-                Transaction t = new Transaction(null, recipient.getPublicKey(), 100, sender.sign("yolo"));
+                Transaction t = new Transaction(null, recipient.getPublicKey(), 100, sender.sign("yolo"), 0);
             });
     }
 
@@ -48,7 +48,7 @@ public class TransactionTest {
         assertThrows(IllegalArgumentException.class, 
             () -> {
                 Wallet sender = new Wallet();
-                Transaction t = new Transaction(sender.getPublicKey(), null, 100, sender.sign("yolo"));
+                Transaction t = new Transaction(sender.getPublicKey(), null, 100, sender.sign("yolo"), 0);
             });
     }
 
@@ -57,27 +57,27 @@ public class TransactionTest {
         assertThrows(IllegalArgumentException.class, 
             () -> {
                 Wallet sender = new Wallet();
-                Transaction t = new Transaction(sender.getPublicKey(), sender.getPublicKey(), 100, sender.sign("yolo"));
+                Transaction t = new Transaction(sender.getPublicKey(), sender.getPublicKey(), 100, sender.sign("yolo"), 0);
             });
     }
 
     @Test
     void testSmallestAmount() {
         Wallet w = new Wallet(), j = new Wallet();
-        assertDoesNotThrow(() -> new Transaction(w.getPublicKey(), j.getPublicKey(), 1, w.sign("yolo")));
+        assertDoesNotThrow(() -> new Transaction(w.getPublicKey(), j.getPublicKey(), 1, w.sign("yolo"), 0));
     }
 
     @Test
     void testLargeAmount() {
         Wallet w = new Wallet(), j = new Wallet();
-        assertDoesNotThrow(() -> new Transaction(w.getPublicKey(), j.getPublicKey(), 9223372036857L, w.sign("yolo")));
+        assertDoesNotThrow(() -> new Transaction(w.getPublicKey(), j.getPublicKey(), 9223372036857L, w.sign("yolo"), 0));
     }
 
     @Test
     void testTransactionHashDeterminism() {
         Wallet w = new Wallet(), j = new Wallet();
-        Transaction a = new Transaction(w.getPublicKey(), j.getPublicKey(), 34, w.sign("yolo"));
-        Transaction b = new Transaction(w.getPublicKey(), j.getPublicKey(), 34, w.sign("yolo"));
+        Transaction a = new Transaction(w.getPublicKey(), j.getPublicKey(), 34, w.sign("yolo"), 0);
+        Transaction b = new Transaction(w.getPublicKey(), j.getPublicKey(), 34, w.sign("yolo"), 0);
 
         assertEquals(a.calculateHash(), b.calculateHash());
     }
@@ -85,8 +85,8 @@ public class TransactionTest {
     @Test
     void testTransactionModsChangeHash() {
         Wallet w = new Wallet(), j = new Wallet(), k = new Wallet();
-        Transaction a = new Transaction(w.getPublicKey(), j.getPublicKey(), 34, w.sign("yolo"));
-        Transaction b = new Transaction(k.getPublicKey(), j.getPublicKey(), 34, w.sign("yolo"));
+        Transaction a = new Transaction(w.getPublicKey(), j.getPublicKey(), 34, w.sign("yolo"), 0);
+        Transaction b = new Transaction(k.getPublicKey(), j.getPublicKey(), 34, w.sign("yolo"), 0);
 
         assertNotEquals(a.calculateHash(), b.calculateHash());
     }

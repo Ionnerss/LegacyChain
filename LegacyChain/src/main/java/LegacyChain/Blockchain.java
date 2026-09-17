@@ -11,7 +11,7 @@ import LegacyChain.Transaction.TransactionType;
 public class Blockchain {
     private ArrayList<Block> chain;
     private int difficulty;
-    private final int BLOCK_REWARD = 50;
+    private final long BLOCK_REWARD = 50;
 
     public Blockchain(int difficulty) {
         this.chain = new ArrayList<>();
@@ -31,15 +31,45 @@ public class Blockchain {
 
     public Block getLatestBlock() { return chain.get(chain.size() - 1); }
 
+    public int getNextNonce(PublicKey sender) {
+        if (sender == null)
+            throw new IllegalArgumentException("Invalid key.");
+
+        int nextNonce = 0;
+        for (Block b : chain) {
+            for (Transaction t : b.getTransactions()) {
+                if (t.getType() == TransactionType.NORMAL && t.getSender().equals(sender))
+                    nextNonce++;
+            }
+        }
+        return nextNonce;
+    }
+
     public Block addBlock(List<Transaction> transactions, PublicKey miner) {
         if (transactions == null) throw new IllegalArgumentException("Invalid transactions list.");
         if (miner == null) throw new IllegalArgumentException("Invalid miner key.");
         
         Map<PublicKey, Long> tempBalances = new HashMap<>();
+        Map<PublicKey, Integer> tempNonces = new HashMap<>();
+
         for (Transaction t : transactions) {
             if (t == null) throw new IllegalArgumentException("Invalid transaction in block.");
             else if (t.getType() == TransactionType.REWARD) throw new IllegalArgumentException("Invalid transaction in block.");
             else if (!t.isValid()) throw new IllegalArgumentException("Invalid transaction in block.");
+
+            int expectedNonce = 0;
+            if (t.getType() == TransactionType.NORMAL) {
+                if (!tempNonces.containsKey(t.getSender())) {
+                    expectedNonce = getNextNonce(t.getSender());
+                    tempNonces.put(t.getSender(), expectedNonce);
+                }
+
+                expectedNonce = tempNonces.get(t.getSender());
+                
+                if (t.getTransactionNonce() != expectedNonce)
+                    throw new IllegalArgumentException("Invalid transaction in block.");
+                tempNonces.put(t.getSender(), expectedNonce + 1);
+            }
 
             if (!tempBalances.containsKey(t.getSender()))
                 tempBalances.put(t.getSender(), getBalance(t.getSender()));
@@ -68,29 +98,6 @@ public class Blockchain {
         chain.add(nBlock);
         return nBlock;
     }
-
-    // private void validateProposedTransactions(List<Transaction> transactions) {
-    //     Map<PublicKey, Long> tempBalances = new HashMap<>();
-    //     for (Transaction t : transactions) {
-    //         if (t == null) throw new IllegalArgumentException("Invalid transaction in block.");
-    //         else if (t.getType() == TransactionType.REWARD) throw new IllegalArgumentException("Invalid transaction in block.");
-    //         else if (!t.isValid()) throw new IllegalArgumentException("Invalid transaction in block.");
-
-    //         if (!tempBalances.containsKey(t.getSender()))
-    //             tempBalances.put(t.getSender(), getBalance(t.getSender()));
-    //         if (!tempBalances.containsKey(t.getRecipient()))
-    //             tempBalances.put(t.getRecipient(), getBalance(t.getRecipient()));
-
-    //         long senderBalance = tempBalances.get(t.getSender());
-    //         long recipientBalance = tempBalances.get(t.getRecipient());
-
-    //         if (senderBalance < t.getAmount()) 
-    //             throw new IllegalArgumentException("Invalid transaction in block.");
-
-    //         tempBalances.put(t.getSender(), senderBalance - t.getAmount());
-    //         tempBalances.put(t.getRecipient(), recipientBalance + t.getAmount());
-    //     }
-    // }
 
     public boolean isValid() {
         String target = "0".repeat(difficulty);
@@ -149,9 +156,10 @@ public class Blockchain {
 
         for (Block b : chain) {
             for (Transaction t : b.getTransactions()) {
-                if (t.getType() == TransactionType.REWARD)
+                if (t.getType() == TransactionType.REWARD) {
                     if (t.getRecipient().equals(owner))
                         balance += t.getAmount();
+                }
                 else if (t.getType() == TransactionType.NORMAL) {
                     if (t.getSender().equals(owner))
                         balance -= t.getAmount();

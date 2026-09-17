@@ -66,7 +66,7 @@ public class WalletTest {
         assertThrows(IllegalArgumentException.class,
             () -> {
                 Wallet w = new Wallet();
-                Transaction t = w.createTransaction(w.getPublicKey(), 10);
+                Transaction t = w.createTransaction(w.getPublicKey(), 10, 0);
             });
     }
 }

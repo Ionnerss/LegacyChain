@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.2" name="LegacyChain.BlockchainTest" time="0.242" tests="17" errors="9" skipped="0" failures="1">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.2" name="LegacyChain.BlockchainTest" time="0.371" tests="30" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="26"/>
     <property name="sun.jnu.encoding" value="UTF-8"/>
@@ -12,7 +12,7 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="CA"/>
     <property name="sun.boot.library.path" value="/opt/homebrew/Cellar/openjdk/26.0.2.1/libexec/openjdk.jdk/Contents/Home/lib"/>
-    <property name="sun.java.command" value="/Users/catalin/Personal-Projects/LegacyChain/target/surefire/surefirebooter-20260915154328724_3.jar /Users/catalin/Personal-Projects/LegacyChain/target/surefire 2026-09-15T15-43-28_628-jvmRun1 surefire-20260915154328724_1tmp surefire_0-20260915154328724_2tmp"/>
+    <property name="sun.java.command" value="/Users/catalin/Personal-Projects/LegacyChain/target/surefire/surefirebooter-20260917152107705_3.jar /Users/catalin/Personal-Projects/LegacyChain/target/surefire 2026-09-17T15-21-07_629-jvmRun1 surefire-20260917152107705_1tmp surefire_0-20260917152107705_2tmp"/>
     <property name="http.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="jdk.debug" value="release"/>
     <property name="surefire.test.class.path" value="/Users/catalin/Personal-Projects/LegacyChain/target/test-classes:/Users/catalin/Personal-Projects/LegacyChain/target/classes:/Users/catalin/.m2/repository/org/junit/jupiter/junit-jupiter/5.14.2/junit-jupiter-5.14.2.jar:/Users/catalin/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.14.2/junit-jupiter-api-5.14.2.jar:/Users/catalin/.m2/repository/org/opentest4j/opentest4j/1.3.0/opentest4j-1.3.0.jar:/Users/catalin/.m2/repository/org/junit/platform/junit-platform-commons/1.14.2/junit-platform-commons-1.14.2.jar:/Users/catalin/.m2/repository/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2.jar:/Users/catalin/.m2/repository/org/junit/jupiter/junit-jupiter-params/5.14.2/junit-jupiter-params-5.14.2.jar:/Users/catalin/.m2/repository/org/junit/jupiter/junit-jupiter-engine/5.14.2/junit-jupiter-engine-5.14.2.jar:/Users/catalin/.m2/repository/org/junit/platform/junit-platform-engine/1.14.2/junit-platform-engine-1.14.2.jar:"/>
@@ -29,7 +29,7 @@
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
     <property name="apple.awt.application.name" value="ForkedBooter"/>
-    <property name="surefire.real.class.path" value="/Users/catalin/Personal-Projects/LegacyChain/target/surefire/surefirebooter-20260915154328724_3.jar"/>
+    <property name="surefire.real.class.path" value="/Users/catalin/Personal-Projects/LegacyChain/target/surefire/surefirebooter-20260917152107705_3.jar"/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="ftp.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="java.runtime.version" value="26.0.2.1"/>
@@ -59,110 +59,34 @@
     <property name="socksNonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="java.class.version" value="70.0"/>
   </properties>
-  <testcase name="testTransactionsOneInvalid" classname="LegacyChain.BlockchainTest" time="0.031"/>
-  <testcase name="testProofOfWork" classname="LegacyChain.BlockchainTest" time="0.03">
-    <error message="Invalid transaction in block." type="java.lang.IllegalArgumentException"><![CDATA[java.lang.IllegalArgumentException: Invalid transaction in block.
-	at LegacyChain.Blockchain.addBlock(Blockchain.java:53)
-	at LegacyChain.BlockchainTest.testProofOfWork(BlockchainTest.java:120)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1612)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1612)
-]]></error>
-  </testcase>
-  <testcase name="testInvalidTransaction" classname="LegacyChain.BlockchainTest" time="0.015"/>
-  <testcase name="testWalletDoesNotAppearInAnyTransactions" classname="LegacyChain.BlockchainTest" time="0.029">
-    <error message="Invalid transaction in block." type="java.lang.IllegalArgumentException"><![CDATA[java.lang.IllegalArgumentException: Invalid transaction in block.
-	at LegacyChain.Blockchain.addBlock(Blockchain.java:53)
-	at LegacyChain.BlockchainTest.testWalletDoesNotAppearInAnyTransactions(BlockchainTest.java:208)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1612)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1612)
-]]></error>
-  </testcase>
-  <testcase name="testAddBlockIncreaseSize" classname="LegacyChain.BlockchainTest" time="0.009">
-    <error message="Invalid transaction in block." type="java.lang.IllegalArgumentException"><![CDATA[java.lang.IllegalArgumentException: Invalid transaction in block.
-	at LegacyChain.Blockchain.addBlock(Blockchain.java:53)
-	at LegacyChain.BlockchainTest.testAddBlockIncreaseSize(BlockchainTest.java:54)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1612)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1612)
-]]></error>
-  </testcase>
-  <testcase name="testTwoMinedBlocks" classname="LegacyChain.BlockchainTest" time="0.013">
-    <error message="Invalid transaction in block." type="java.lang.IllegalArgumentException"><![CDATA[java.lang.IllegalArgumentException: Invalid transaction in block.
-	at LegacyChain.Blockchain.addBlock(Blockchain.java:53)
-	at LegacyChain.BlockchainTest.testTwoMinedBlocks(BlockchainTest.java:235)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1612)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1612)
-]]></error>
-  </testcase>
-  <testcase name="testLinkedBlocksHashes" classname="LegacyChain.BlockchainTest" time="0.01">
-    <error message="Invalid transaction in block." type="java.lang.IllegalArgumentException"><![CDATA[java.lang.IllegalArgumentException: Invalid transaction in block.
-	at LegacyChain.Blockchain.addBlock(Blockchain.java:53)
-	at LegacyChain.BlockchainTest.testLinkedBlocksHashes(BlockchainTest.java:77)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1612)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1612)
-]]></error>
-  </testcase>
-  <testcase name="testBlockchainSize" classname="LegacyChain.BlockchainTest" time="0.008"/>
-  <testcase name="testGenesisPrevHash" classname="LegacyChain.BlockchainTest" time="0.003"/>
-  <testcase name="testAcceptedBlock" classname="LegacyChain.BlockchainTest" time="0.022">
-    <failure message="Unexpected exception thrown: java.lang.IllegalArgumentException: Invalid transaction in block." type="org.opentest4j.AssertionFailedError"><![CDATA[org.opentest4j.AssertionFailedError: Unexpected exception thrown: java.lang.IllegalArgumentException: Invalid transaction in block.
-	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:152)
-	at org.junit.jupiter.api.AssertDoesNotThrow.createAssertionFailedError(AssertDoesNotThrow.java:84)
-	at org.junit.jupiter.api.AssertDoesNotThrow.assertDoesNotThrow(AssertDoesNotThrow.java:75)
-	at org.junit.jupiter.api.AssertDoesNotThrow.assertDoesNotThrow(AssertDoesNotThrow.java:58)
-	at org.junit.jupiter.api.Assertions.assertDoesNotThrow(Assertions.java:3259)
-	at LegacyChain.BlockchainTest.testAcceptedBlock(BlockchainTest.java:159)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1612)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1612)
-Caused by: java.lang.IllegalArgumentException: Invalid transaction in block.
-	at LegacyChain.Blockchain.addBlock(Blockchain.java:53)
-	at LegacyChain.BlockchainTest.lambda$1(BlockchainTest.java:159)
-	at org.junit.jupiter.api.AssertDoesNotThrow.assertDoesNotThrow(AssertDoesNotThrow.java:71)
-	... 6 more
-]]></failure>
-  </testcase>
-  <testcase name="testRandomWalletBalance" classname="LegacyChain.BlockchainTest" time="0.012">
-    <error message="Invalid transaction in block." type="java.lang.IllegalArgumentException"><![CDATA[java.lang.IllegalArgumentException: Invalid transaction in block.
-	at LegacyChain.Blockchain.addBlock(Blockchain.java:53)
-	at LegacyChain.BlockchainTest.testRandomWalletBalance(BlockchainTest.java:253)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1612)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1612)
-]]></error>
-  </testcase>
-  <testcase name="testInvalidDifficulty" classname="LegacyChain.BlockchainTest" time="0.002"/>
-  <testcase name="testInvalidOwner" classname="LegacyChain.BlockchainTest" time="0.003"/>
-  <testcase name="testOneMinedBlock" classname="LegacyChain.BlockchainTest" time="0.013">
-    <error message="Invalid transaction in block." type="java.lang.IllegalArgumentException"><![CDATA[java.lang.IllegalArgumentException: Invalid transaction in block.
-	at LegacyChain.Blockchain.addBlock(Blockchain.java:53)
-	at LegacyChain.BlockchainTest.testOneMinedBlock(BlockchainTest.java:222)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1612)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1612)
-]]></error>
-  </testcase>
-  <testcase name="testMultipleBlocksChainIsValid" classname="LegacyChain.BlockchainTest" time="0.008">
-    <error message="Invalid transaction in block." type="java.lang.IllegalArgumentException"><![CDATA[java.lang.IllegalArgumentException: Invalid transaction in block.
-	at LegacyChain.Blockchain.addBlock(Blockchain.java:53)
-	at LegacyChain.BlockchainTest.testMultipleBlocksChainIsValid(BlockchainTest.java:95)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1612)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1612)
-]]></error>
-  </testcase>
+  <testcase name="testRecipientCanSpendReceivedFundsInSameBlock" classname="LegacyChain.BlockchainTest" time="0.075"/>
+  <testcase name="testRejectsCombinedOverspendingInSameBlock" classname="LegacyChain.BlockchainTest" time="0.017"/>
+  <testcase name="testOldNonceRejected" classname="LegacyChain.BlockchainTest" time="0.028"/>
+  <testcase name="testSequentialNoncesInSameBlockAccepted" classname="LegacyChain.BlockchainTest" time="0.019"/>
+  <testcase name="testAllowsExactBalanceSpendingInSameBlock" classname="LegacyChain.BlockchainTest" time="0.019"/>
+  <testcase name="testTransactionsOneInvalid" classname="LegacyChain.BlockchainTest" time="0.017"/>
+  <testcase name="testProofOfWork" classname="LegacyChain.BlockchainTest" time="0.005"/>
+  <testcase name="testValidChainWithBalances" classname="LegacyChain.BlockchainTest" time="0.024"/>
+  <testcase name="testSkippedNonceRejected" classname="LegacyChain.BlockchainTest" time="0.018"/>
+  <testcase name="testZeroBalanceCannotSpend" classname="LegacyChain.BlockchainTest" time="0.008"/>
+  <testcase name="testInvalidTransaction" classname="LegacyChain.BlockchainTest" time="0.007"/>
+  <testcase name="testWalletDoesNotAppearInAnyTransactions" classname="LegacyChain.BlockchainTest" time="0.004"/>
+  <testcase name="testAddBlockIncreaseSize" classname="LegacyChain.BlockchainTest" time="0.003"/>
+  <testcase name="testTwoMinedBlocks" classname="LegacyChain.BlockchainTest" time="0.003"/>
+  <testcase name="testLinkedBlocksHashes" classname="LegacyChain.BlockchainTest" time="0.004"/>
+  <testcase name="testBlockchainSize" classname="LegacyChain.BlockchainTest" time="0.001"/>
+  <testcase name="testGenesisPrevHash" classname="LegacyChain.BlockchainTest" time="0.001"/>
+  <testcase name="testRejectedOverspendingBlockDoesNotChangeChainSize" classname="LegacyChain.BlockchainTest" time="0.01"/>
+  <testcase name="testAcceptedBlock" classname="LegacyChain.BlockchainTest" time="0.004"/>
+  <testcase name="testMinerCanSpendRewardInNextBlock" classname="LegacyChain.BlockchainTest" time="0.012"/>
+  <testcase name="testDuplicateNonceInSameBlockRejected" classname="LegacyChain.BlockchainTest" time="0.01"/>
+  <testcase name="testRandomWalletBalance" classname="LegacyChain.BlockchainTest" time="0.006"/>
+  <testcase name="testInvalidDifficulty" classname="LegacyChain.BlockchainTest" time="0.001"/>
+  <testcase name="testInvalidOwner" classname="LegacyChain.BlockchainTest" time="0.002"/>
+  <testcase name="testOneMinedBlock" classname="LegacyChain.BlockchainTest" time="0.002"/>
+  <testcase name="testMultipleBlocksChainIsValid" classname="LegacyChain.BlockchainTest" time="0.009"/>
+  <testcase name="testFirstTransactionNonceAccepted" classname="LegacyChain.BlockchainTest" time="0.013"/>
   <testcase name="testValidWallet" classname="LegacyChain.BlockchainTest" time="0.002"/>
-  <testcase name="testBlockTransactionListImmutability" classname="LegacyChain.BlockchainTest" time="0.01">
-    <error message="Invalid transaction in block." type="java.lang.IllegalArgumentException"><![CDATA[java.lang.IllegalArgumentException: Invalid transaction in block.
-	at LegacyChain.Blockchain.addBlock(Blockchain.java:53)
-	at LegacyChain.BlockchainTest.testBlockTransactionListImmutability(BlockchainTest.java:139)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1612)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1612)
-]]></error>
-  </testcase>
+  <testcase name="testRejectsInsufficientBalance" classname="LegacyChain.BlockchainTest" time="0.009"/>
+  <testcase name="testBlockTransactionListImmutability" classname="LegacyChain.BlockchainTest" time="0.008"/>
 </testsuite>
