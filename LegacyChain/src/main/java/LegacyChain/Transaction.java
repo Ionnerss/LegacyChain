@@ -9,8 +9,10 @@ public class Transaction {
     private final PublicKey recipient;
     private final long amount;
     private final byte[] signature;
-    private TransactionType type;
-    private int transactionNonce;
+    private final TransactionType type;
+    private final int transactionNonce;
+    private final String transactionId;
+    private final int rewardHeight;
 
     //REWARD since every wallet starts at 0, must be able to mine
     enum TransactionType {
@@ -33,10 +35,12 @@ public class Transaction {
             throw new IllegalArgumentException("Invalid transaction data.");
         this.transactionNonce = transactionNonce;
 
+        this.rewardHeight = -1; //not applicable
         this.type = TransactionType.NORMAL;
+        this.transactionId = calculateHash();
     }
 
-    Transaction(PublicKey recipient, long amount) {
+    Transaction(PublicKey recipient, long amount, int rewardHeight) {
         if (recipient == null || amount <= 0)
             throw new IllegalArgumentException("Invalid transaction data.");
 
@@ -44,7 +48,14 @@ public class Transaction {
         this.amount = amount;
         this.sender = null;
         this.signature = null;
+
+        if (rewardHeight <= 0)
+            throw new IllegalArgumentException("Invalid transaction data.");
+        this.rewardHeight = rewardHeight;
+
+        this.transactionNonce = -1;
         this.type = TransactionType.REWARD;
+        this.transactionId = calculateHash();
     }
 
     public PublicKey getSender() { return this.sender; }
@@ -57,13 +68,18 @@ public class Transaction {
 
     public int getTransactionNonce() { return this.transactionNonce; }
 
+    public String getTransactionId() { return this.transactionId; }
+    
+    public int getRewardHeight() { return this.rewardHeight; }
+
     String calculateHash() {
         if (this.type == TransactionType.NORMAL) {
             String candidateHash = signingData(sender, recipient, amount, transactionNonce) + "|" + Base64.getEncoder().encodeToString(signature);
             return HashUtil.sha256(candidateHash);
         }
-        else
-            return HashUtil.sha256(rewardData(recipient, amount));
+        else if (this.type == TransactionType.REWARD)
+            return HashUtil.sha256(rewardData(recipient, amount, rewardHeight));
+        else throw new IllegalArgumentException("Invalid transaction data.");
     }
 
     static String signingData(PublicKey sender, PublicKey recipient, long amount, int transactionNonce) {
@@ -72,16 +88,19 @@ public class Transaction {
             + "|" + amount + "|" + transactionNonce;
     }
 
-    static String rewardData(PublicKey recipient, long amount) {
+    static String rewardData(PublicKey recipient, long amount, int rewardHeight) {
         return TransactionType.REWARD + "|" + Base64.getEncoder().encodeToString(recipient.getEncoded())
-            + "|" + amount;
+            + "|" + amount + "|" + rewardHeight;
     }
 
     public boolean isValid() {
+        if (transactionId != calculateHash())
+            throw new IllegalArgumentException("Invalid transaction data.");
+
         if (this.type == TransactionType.NORMAL)
             return SignatureUtil.verify(signingData(this.sender, this.recipient, this.amount, this.transactionNonce), this.signature, sender);
         else if (this.type == TransactionType.REWARD) {
-            if (this.sender != null || this.recipient == null || amount <= 0 || this.signature != null)
+            if (this.sender != null || this.recipient == null || amount <= 0 || this.signature != null || this.rewardHeight <= 0)
                 return false;
             return true;
         }

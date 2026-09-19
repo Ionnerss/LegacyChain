@@ -429,4 +429,32 @@ public class BlockchainTest {
             ), new Wallet().getPublicKey());
         });
     }
+
+    @Test 
+    void testGenesisHeightInChain() {
+        Blockchain k = new Blockchain(2);
+        
+        assertEquals(0, k.getBlock(0).getHeight());
+    }
+
+    @Test 
+    void testBlockHeightsIncreasedSequentially() {
+        Blockchain k = new Blockchain(2);
+
+        k.addBlock(new ArrayList<Transaction>(), new Wallet().getPublicKey());
+        k.addBlock(new ArrayList<Transaction>(), new Wallet().getPublicKey());
+
+        assertEquals(1, k.getBlock(1).getHeight());
+        assertEquals(2, k.getBlock(2).getHeight());
+    }
+
+    @Test 
+    void testBlockchainValidityWithProperHeights() {
+        Blockchain k = new Blockchain(2);
+
+        k.addBlock(new ArrayList<Transaction>(), new Wallet().getPublicKey());
+        k.addBlock(new ArrayList<Transaction>(), new Wallet().getPublicKey());
+
+        assertTrue(k.isValid());
+    }
 }

@@ -20,7 +20,7 @@ public class Blockchain {
             throw new IllegalArgumentException("Invalid difficulty setting.");
         this.difficulty = difficulty;
 
-        Block genesis = new Block(new ArrayList<>(), "0");
+        Block genesis = new Block(new ArrayList<>(), "0", 0);
         genesis.mineBlock(difficulty);
         this.chain.add(genesis);
     }
@@ -90,10 +90,10 @@ public class Blockchain {
         String lastHash = chain.get(index).getHash();
 
         List<Transaction> tCopy = new ArrayList<>(transactions);
-        Transaction minerRewardTrans = new Transaction(miner, BLOCK_REWARD);
+        Transaction minerRewardTrans = new Transaction(miner, BLOCK_REWARD, this.chain.size());
         tCopy.add(minerRewardTrans);
 
-        Block nBlock = new Block(tCopy, lastHash);
+        Block nBlock = new Block(tCopy, lastHash, this.chain.size());
         nBlock.mineBlock(difficulty);
         chain.add(nBlock);
         return nBlock;
@@ -105,26 +105,35 @@ public class Blockchain {
         if (!genesis.getHash().equals(genesis.calculateHash()) 
             || !genesis.getHash().startsWith(target)
             || !genesis.getTransactions().isEmpty()
-            || !"0".equals(genesis.getPreviousHash()))
+            || !"0".equals(genesis.getPreviousHash())
+            || genesis.getHeight() != 0)
             return false;
 
         Map<PublicKey, Long> tempBalances = new HashMap<>();
+        Map<PublicKey, Integer> expectedNonces = new HashMap<>();
+
         int i = 1;
         while (i < chain.size()) {
-            int rewardCout = 0;
+            int rewardCount = 0;
             Block currBlock = chain.get(i);
             Block prevBlock = chain.get(i - 1);
 
             if (!currBlock.getHash().equals(currBlock.calculateHash()) 
                 || !currBlock.getPreviousHash().equals(prevBlock.getHash()) 
-                || !currBlock.getHash().startsWith(target))
+                || !currBlock.getHash().startsWith(target)
+                || currBlock.getHeight() != i)
                 return false;
 
             for (Transaction t : currBlock.getTransactions()) {
                 if (t == null) return false;
                 else if (t.getType() == TransactionType.NORMAL) {
                     if (!t.isValid()) return false;
-    
+
+                    int expected = expectedNonces.getOrDefault(t.getSender(), 0);
+                    
+                    if (t.getTransactionNonce() != expected) return false;
+                    expectedNonces.put(t.getSender(), ++expected);
+
                     long senderBalance = tempBalances.getOrDefault(t.getSender(), (long) 0);
                     long recipientBalance = tempBalances.getOrDefault(t.getRecipient(), (long) 0);
     
@@ -138,13 +147,13 @@ public class Blockchain {
                         || t.getAmount() != BLOCK_REWARD || !t.isValid())
                         return false;
                     
-                    rewardCout++;
+                    rewardCount++;
                     long currMinerBalance = tempBalances.getOrDefault(t.getRecipient(), (long) 0);
                     tempBalances.put(t.getRecipient(), currMinerBalance + BLOCK_REWARD);
                 }
                 else return false;
             }
-            if (rewardCout != 1) return false;
+            if (rewardCount != 1) return false;
             i++;
         }
         return true;

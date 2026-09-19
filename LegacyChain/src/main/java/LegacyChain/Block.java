@@ -9,9 +9,10 @@ public class Block {
 	private List<Transaction> transactions;
 	private long timeStamp; //as number of milliseconds since 1/1/1970.
 	private long nonce;
+	private final int height;
 
 	//Block Constructor.
-	public Block(List<Transaction> transactions, String previousHash) {
+	public Block(List<Transaction> transactions, String previousHash, int height) {
 		if (transactions.contains(null))
 			throw new IllegalArgumentException("Invalid transactions data.");
 
@@ -20,6 +21,7 @@ public class Block {
 		this.timeStamp = new Date().getTime();
 		this.nonce = 0;
         this.hash = calculateHash();
+		this.height = height;
 	}
 
 	public String getHash() { return this.hash; }
@@ -32,6 +34,8 @@ public class Block {
 
 	public long getNonce() { return this.nonce; }
 
+	public int getHeight() { return this.height; }
+
     String calculateHash() {
         String ts = Long.toString(this.timeStamp);
 
@@ -40,7 +44,7 @@ public class Block {
 			sb.append(t.calculateHash());
 		}
 
-        String input = this.previousHash + ts + sb.toString() + this.nonce;
+        String input = this.previousHash + ts + sb.toString() + this.nonce + this.height;
         return HashUtil.sha256(input);
     }
 
