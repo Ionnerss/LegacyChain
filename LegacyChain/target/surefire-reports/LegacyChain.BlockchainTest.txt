@@ -1,4 +1,131 @@
 -------------------------------------------------------------------------------
 Test set: LegacyChain.BlockchainTest
 -------------------------------------------------------------------------------
-Tests run: 33, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.425 s -- in LegacyChain.BlockchainTest
+Tests run: 34, Failures: 7, Errors: 2, Skipped: 0, Time elapsed: 0.373 s <<< FAILURE! -- in LegacyChain.BlockchainTest
+LegacyChain.BlockchainTest.testRecipientCanSpendReceivedFundsInSameBlock -- Time elapsed: 0.104 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Unexpected exception thrown: java.lang.IllegalArgumentException: Invalid transaction in block.
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:152)
+	at org.junit.jupiter.api.AssertDoesNotThrow.createAssertionFailedError(AssertDoesNotThrow.java:84)
+	at org.junit.jupiter.api.AssertDoesNotThrow.assertDoesNotThrow(AssertDoesNotThrow.java:53)
+	at org.junit.jupiter.api.AssertDoesNotThrow.assertDoesNotThrow(AssertDoesNotThrow.java:36)
+	at org.junit.jupiter.api.Assertions.assertDoesNotThrow(Assertions.java:3199)
+	at LegacyChain.BlockchainTest.testRecipientCanSpendReceivedFundsInSameBlock(BlockchainTest.java:308)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+Caused by: java.lang.IllegalArgumentException: Invalid transaction in block.
+	at LegacyChain.Blockchain.addBlock(Blockchain.java:58)
+	at LegacyChain.BlockchainTest.lambda$testRecipientCanSpendReceivedFundsInSameBlock$0(BlockchainTest.java:309)
+	at org.junit.jupiter.api.AssertDoesNotThrow.assertDoesNotThrow(AssertDoesNotThrow.java:49)
+	... 6 more
+
+LegacyChain.BlockchainTest.testOldNonceRejected -- Time elapsed: 0.008 s <<< ERROR!
+java.lang.IllegalArgumentException: Invalid transaction in block.
+	at LegacyChain.Blockchain.addBlock(Blockchain.java:58)
+	at LegacyChain.BlockchainTest.testOldNonceRejected(BlockchainTest.java:408)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+
+LegacyChain.BlockchainTest.testSequentialNoncesInSameBlockAccepted -- Time elapsed: 0.007 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Unexpected exception thrown: java.lang.IllegalArgumentException: Invalid transaction in block.
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:152)
+	at org.junit.jupiter.api.AssertDoesNotThrow.createAssertionFailedError(AssertDoesNotThrow.java:84)
+	at org.junit.jupiter.api.AssertDoesNotThrow.assertDoesNotThrow(AssertDoesNotThrow.java:53)
+	at org.junit.jupiter.api.AssertDoesNotThrow.assertDoesNotThrow(AssertDoesNotThrow.java:36)
+	at org.junit.jupiter.api.Assertions.assertDoesNotThrow(Assertions.java:3199)
+	at LegacyChain.BlockchainTest.testSequentialNoncesInSameBlockAccepted(BlockchainTest.java:377)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+Caused by: java.lang.IllegalArgumentException: Invalid transaction in block.
+	at LegacyChain.Blockchain.addBlock(Blockchain.java:58)
+	at LegacyChain.BlockchainTest.lambda$testSequentialNoncesInSameBlockAccepted$0(BlockchainTest.java:378)
+	at org.junit.jupiter.api.AssertDoesNotThrow.assertDoesNotThrow(AssertDoesNotThrow.java:49)
+	... 6 more
+
+LegacyChain.BlockchainTest.testAllowsExactBalanceSpendingInSameBlock -- Time elapsed: 0.011 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Unexpected exception thrown: java.lang.IllegalArgumentException: Invalid transaction in block.
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:152)
+	at org.junit.jupiter.api.AssertDoesNotThrow.createAssertionFailedError(AssertDoesNotThrow.java:84)
+	at org.junit.jupiter.api.AssertDoesNotThrow.assertDoesNotThrow(AssertDoesNotThrow.java:53)
+	at org.junit.jupiter.api.AssertDoesNotThrow.assertDoesNotThrow(AssertDoesNotThrow.java:36)
+	at org.junit.jupiter.api.Assertions.assertDoesNotThrow(Assertions.java:3199)
+	at LegacyChain.BlockchainTest.testAllowsExactBalanceSpendingInSameBlock(BlockchainTest.java:293)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+Caused by: java.lang.IllegalArgumentException: Invalid transaction in block.
+	at LegacyChain.Blockchain.addBlock(Blockchain.java:58)
+	at LegacyChain.BlockchainTest.lambda$testAllowsExactBalanceSpendingInSameBlock$0(BlockchainTest.java:294)
+	at org.junit.jupiter.api.AssertDoesNotThrow.assertDoesNotThrow(AssertDoesNotThrow.java:49)
+	... 6 more
+
+LegacyChain.BlockchainTest.testValidChainWithBalances -- Time elapsed: 0.007 s <<< ERROR!
+java.lang.IllegalArgumentException: Invalid transaction in block.
+	at LegacyChain.Blockchain.addBlock(Blockchain.java:58)
+	at LegacyChain.BlockchainTest.testValidChainWithBalances(BlockchainTest.java:345)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+
+LegacyChain.BlockchainTest.testMinerCanSpendRewardInNextBlock -- Time elapsed: 0.005 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Unexpected exception thrown: java.lang.IllegalArgumentException: Invalid transaction in block.
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:152)
+	at org.junit.jupiter.api.AssertDoesNotThrow.createAssertionFailedError(AssertDoesNotThrow.java:84)
+	at org.junit.jupiter.api.AssertDoesNotThrow.assertDoesNotThrow(AssertDoesNotThrow.java:53)
+	at org.junit.jupiter.api.AssertDoesNotThrow.assertDoesNotThrow(AssertDoesNotThrow.java:36)
+	at org.junit.jupiter.api.Assertions.assertDoesNotThrow(Assertions.java:3199)
+	at LegacyChain.BlockchainTest.testMinerCanSpendRewardInNextBlock(BlockchainTest.java:234)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+Caused by: java.lang.IllegalArgumentException: Invalid transaction in block.
+	at LegacyChain.Blockchain.addBlock(Blockchain.java:58)
+	at LegacyChain.BlockchainTest.lambda$testMinerCanSpendRewardInNextBlock$0(BlockchainTest.java:235)
+	at org.junit.jupiter.api.AssertDoesNotThrow.assertDoesNotThrow(AssertDoesNotThrow.java:49)
+	... 6 more
+
+LegacyChain.BlockchainTest.testBlockchainValidityWithProperHeights -- Time elapsed: 0.008 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: expected: <true> but was: <false>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertTrue.failNotTrue(AssertTrue.java:63)
+	at org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:36)
+	at org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:31)
+	at org.junit.jupiter.api.Assertions.assertTrue(Assertions.java:183)
+	at LegacyChain.BlockchainTest.testBlockchainValidityWithProperHeights(BlockchainTest.java:458)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+
+LegacyChain.BlockchainTest.testMultipleBlocksChainIsValid -- Time elapsed: 0.006 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: expected: <true> but was: <false>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertTrue.failNotTrue(AssertTrue.java:63)
+	at org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:36)
+	at org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:31)
+	at org.junit.jupiter.api.Assertions.assertTrue(Assertions.java:183)
+	at LegacyChain.BlockchainTest.testMultipleBlocksChainIsValid(BlockchainTest.java:100)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+
+LegacyChain.BlockchainTest.testFirstTransactionNonceAccepted -- Time elapsed: 0.004 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Unexpected exception thrown: java.lang.IllegalArgumentException: Invalid transaction in block.
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:152)
+	at org.junit.jupiter.api.AssertDoesNotThrow.createAssertionFailedError(AssertDoesNotThrow.java:84)
+	at org.junit.jupiter.api.AssertDoesNotThrow.assertDoesNotThrow(AssertDoesNotThrow.java:53)
+	at org.junit.jupiter.api.AssertDoesNotThrow.assertDoesNotThrow(AssertDoesNotThrow.java:36)
+	at org.junit.jupiter.api.Assertions.assertDoesNotThrow(Assertions.java:3199)
+	at LegacyChain.BlockchainTest.testFirstTransactionNonceAccepted(BlockchainTest.java:362)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+Caused by: java.lang.IllegalArgumentException: Invalid transaction in block.
+	at LegacyChain.Blockchain.addBlock(Blockchain.java:58)
+	at LegacyChain.BlockchainTest.lambda$testFirstTransactionNonceAccepted$0(BlockchainTest.java:363)
+	at org.junit.jupiter.api.AssertDoesNotThrow.assertDoesNotThrow(AssertDoesNotThrow.java:49)
+	... 6 more
+

@@ -90,4 +90,61 @@ public class TransactionTest {
 
         assertNotEquals(a.calculateHash(), b.calculateHash());
     }
+
+    @Test 
+    void testTransactionIdMatchesCalculatedHash() {
+        Wallet a = new Wallet();
+        Transaction b = a.createTransaction(new Wallet().getPublicKey(), 34, 0);
+        assertEquals(b.calculateHash(), b.getTransactionId());
+    }
+
+    @Test 
+    void testSameTransactionDataProducesSameId() {
+        Wallet w = new Wallet(), j = new Wallet();
+
+        Transaction a = w.createTransaction(j.getPublicKey(), 10, 0);
+        Transaction b = w.createTransaction(j.getPublicKey(), 10, 0);
+
+        assertEquals(a.getTransactionId(), b.getTransactionId());
+    }
+
+    @Test 
+    void testDifferentNonceProducesDifferentId() {
+        Wallet w = new Wallet(), j = new Wallet();
+
+        Transaction a = w.createTransaction(j.getPublicKey(), 10, 0);
+        Transaction b = w.createTransaction(j.getPublicKey(), 10, 1);
+
+        assertNotEquals(a.getTransactionId(), b.getTransactionId());
+    }
+
+    @Test 
+    void testDifferentAmountProducesDifferentId() {
+        Wallet w = new Wallet(), j = new Wallet();
+
+        Transaction a = w.createTransaction(j.getPublicKey(), 10, 0);
+        Transaction b = w.createTransaction(j.getPublicKey(), 20, 0);
+
+        assertNotEquals(a.getTransactionId(), b.getTransactionId());
+    }
+
+    @Test
+    void testDifferentRecipientProducesDifferentId() {
+        Wallet w = new Wallet(), j = new Wallet();
+
+        Transaction a = w.createTransaction(j.getPublicKey(), 10, 0);
+        Transaction b = w.createTransaction(new Wallet().getPublicKey(), 10, 0);
+
+        assertNotEquals(a.getTransactionId(), b.getTransactionId());
+    }
+
+    @Test 
+    void testRewardAtDifferentHeightsProducesDifferentIds() {
+        Wallet w = new Wallet();
+
+        Transaction a = new Transaction(w.getPublicKey(), 50, 1);
+        Transaction b = new Transaction(w.getPublicKey(), 50, 2);
+
+        assertNotEquals(a.getTransactionId(), b.getTransactionId());
+    }
 }

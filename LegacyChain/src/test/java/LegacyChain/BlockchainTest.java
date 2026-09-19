@@ -457,4 +457,16 @@ public class BlockchainTest {
 
         assertTrue(k.isValid());
     }
+
+    @Test 
+    void testRewardHeightMatchesBlockHeight() {
+        Blockchain k = new Blockchain(2);
+        Wallet w = new Wallet();
+
+        k.addBlock(new ArrayList<Transaction>(), w.getPublicKey());
+        Transaction t = k.getLatestBlock().getTransactions().get(k.getBlock(1).getTransactions().size() - 1);
+
+
+        assertEquals(t.getRewardHeight(), k.getLatestBlock().getHeight());
+    }
 }

@@ -144,7 +144,7 @@ public class Blockchain {
                 }
                 else if (t.getType() == TransactionType.REWARD) {
                     if (currBlock.getTransactions().indexOf(t) != currBlock.getTransactions().size() - 1
-                        || t.getAmount() != BLOCK_REWARD || !t.isValid())
+                        || t.getAmount() != BLOCK_REWARD || !t.isValid() || t.getRewardHeight() != currBlock.getHeight())
                         return false;
                     
                     rewardCount++;
