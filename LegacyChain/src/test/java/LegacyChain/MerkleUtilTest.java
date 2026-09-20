@@ -73,4 +73,9 @@ public class MerkleUtilTest {
             MerkleUtil.calculateMerkleRoot(new ArrayList<Transaction>(List.of(b)))
         );
     }
+
+    @Test 
+    void testValidMerkleProof() {
+        
+    }
 }
