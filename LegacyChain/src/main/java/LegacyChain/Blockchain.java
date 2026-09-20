@@ -121,7 +121,8 @@ public class Blockchain {
             if (!currBlock.getHash().equals(currBlock.calculateHash()) 
                 || !currBlock.getPreviousHash().equals(prevBlock.getHash()) 
                 || !currBlock.getHash().startsWith(target)
-                || currBlock.getHeight() != i)
+                || currBlock.getHeight() != i
+                || !currBlock.getMerkleRoot().equals(MerkleUtil.calculateMerkleRoot(currBlock.getTransactions())))
                 return false;
 
             for (Transaction t : currBlock.getTransactions()) {

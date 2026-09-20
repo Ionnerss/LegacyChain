@@ -10,6 +10,7 @@ public class Block {
 	private long timeStamp; //as number of milliseconds since 1/1/1970.
 	private long nonce;
 	private final int height;
+	private String merkleRoot;
 
 	//Block Constructor.
 	public Block(List<Transaction> transactions, String previousHash, int height) {
@@ -21,6 +22,7 @@ public class Block {
 		this.timeStamp = new Date().getTime();
 		this.nonce = 0;
         this.hash = calculateHash();
+		this.merkleRoot = MerkleUtil.calculateMerkleRoot(transactions);
 		this.height = height;
 	}
 
@@ -36,15 +38,12 @@ public class Block {
 
 	public int getHeight() { return this.height; }
 
+	public String getMerkleRoot() { return this.merkleRoot; }
+
     String calculateHash() {
         String ts = Long.toString(this.timeStamp);
 
-		StringBuilder sb = new StringBuilder();
-		for (Transaction t : transactions) {
-			sb.append(t.calculateHash());
-		}
-
-        String input = this.previousHash + ts + sb.toString() + this.nonce + this.height;
+        String input = this.previousHash + ts + this.height + this.merkleRoot + this.nonce;
         return HashUtil.sha256(input);
     }
 

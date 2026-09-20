@@ -466,4 +466,63 @@ public class BlockchainTest {
 
         assertEquals(t.getRewardHeight(), k.getLatestBlock().getHeight());
     }
+
+    @Test 
+    void testBlockStoresCorrectMerkleRoot() {
+        Blockchain k = new Blockchain(2);
+        Wallet w = new Wallet();
+
+        k.addBlock(new ArrayList<Transaction>(), w.getPublicKey());
+        k.addBlock(new ArrayList<Transaction>(List.of(
+            w.createTransaction(new Wallet().getPublicKey(), 5, 0),
+            w.createTransaction(new Wallet().getPublicKey(), 10, 1)
+        )), new Wallet().getPublicKey());
+
+        assertEquals(MerkleUtil.calculateMerkleRoot(k.getLatestBlock().getTransactions()), k.getLatestBlock().getMerkleRoot());
+
+    }
+
+    @Test 
+    void testGenesisHasEmptyMerkleRoot() {
+        Blockchain k = new Blockchain(2);
+        assertEquals(MerkleUtil.calculateMerkleRoot(new ArrayList<Transaction>()), k.getLatestBlock().getMerkleRoot());
+    }
+
+    @Test 
+    void testMultipleTransactionBlockHasCorrectMerkleRoot() {
+        Blockchain k = new Blockchain(2);
+        Wallet w = new Wallet();
+
+        k.addBlock(new ArrayList<Transaction>(), w.getPublicKey());
+        k.addBlock(new ArrayList<Transaction>(List.of(
+            w.createTransaction(new Wallet().getPublicKey(), 5, 0),
+            w.createTransaction(new Wallet().getPublicKey(), 10, 1),
+            w.createTransaction(new Wallet().getPublicKey(), 15, 2),
+            w.createTransaction(new Wallet().getPublicKey(), 12, 3),
+            w.createTransaction(new Wallet().getPublicKey(), 7, 4)
+        )), new Wallet().getPublicKey());
+
+        assertEquals(MerkleUtil.calculateMerkleRoot(k.getLatestBlock().getTransactions()), k.getLatestBlock().getMerkleRoot());
+    }
+
+    @Test 
+    void testBlockchainWithMerkleRootsIsValid() {
+        Blockchain k = new Blockchain(2);
+        Wallet w = new Wallet();
+
+        k.addBlock(new ArrayList<Transaction>(), w.getPublicKey());
+        k.addBlock(new ArrayList<Transaction>(List.of(
+            w.createTransaction(new Wallet().getPublicKey(), 5, 0),
+            w.createTransaction(new Wallet().getPublicKey(), 10, 1)
+        )), new Wallet().getPublicKey());
+        k.addBlock(new ArrayList<Transaction>(List.of(
+            w.createTransaction(new Wallet().getPublicKey(), 15, 2),
+            w.createTransaction(new Wallet().getPublicKey(), 12, 3)
+        )), new Wallet().getPublicKey());
+        k.addBlock(new ArrayList<Transaction>(List.of(
+            w.createTransaction(new Wallet().getPublicKey(), 7, 4)
+        )), new Wallet().getPublicKey());
+
+        assertTrue(k.isValid());
+    }
 }
