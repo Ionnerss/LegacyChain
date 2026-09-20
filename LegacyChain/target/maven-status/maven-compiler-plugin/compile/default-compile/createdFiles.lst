@@ -1,7 +1,0 @@
-LegacyChain\Transaction$TransactionType.class
-LegacyChain\Transaction.class
-LegacyChain\Blockchain.class
-LegacyChain\Wallet.class
-LegacyChain\Block.class
-LegacyChain\SignatureUtil.class
-LegacyChain\HashUtil.class

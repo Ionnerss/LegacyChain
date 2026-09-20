@@ -94,7 +94,7 @@ public class Transaction {
     }
 
     public boolean isValid() {
-        if (transactionId.equals(calculateHash())) return false;
+        if (!transactionId.equals(calculateHash())) return false;
 
         if (this.type == TransactionType.NORMAL)
             return SignatureUtil.verify(signingData(this.sender, this.recipient, this.amount, this.transactionNonce), this.signature, sender);

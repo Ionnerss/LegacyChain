@@ -1,11 +1,8 @@
 package LegacyChain;
 
 import org.junit.jupiter.api.Test;
-
 import LegacyChain.Transaction.TransactionType;
-
 import static org.junit.jupiter.api.Assertions.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
