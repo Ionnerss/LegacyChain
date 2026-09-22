@@ -7,6 +7,8 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import LegacyChain.MerkleUtil.MerkleProofStep;
+
 public class MerkleUtilTest {
     @Test 
     void testNullTransactionListRejected() {
@@ -76,6 +78,103 @@ public class MerkleUtilTest {
 
     @Test 
     void testValidMerkleProof() {
-        
+        Wallet w = new Wallet();
+        List<Transaction> l = new ArrayList<Transaction>(List.of(
+            new Wallet().createTransaction(new  Wallet().getPublicKey(), 10, 0),
+            w.createTransaction(new Wallet().getPublicKey(), 15, 0),
+            new Wallet().createTransaction(new Wallet().getPublicKey(), 30, 0),
+            new Wallet().createTransaction(new Wallet().getPublicKey(), 30, 0)
+        ));
+
+        assertTrue(MerkleUtil.verifyProof(
+            l.get(1).getTransactionId(), 
+            MerkleUtil.generateProof(l, 1), 
+            MerkleUtil.calculateMerkleRoot(l))
+        );
+    }
+
+    @Test 
+    void testProofForDifferentTransaction() {
+        Wallet w = new Wallet();
+        List<Transaction> l = new ArrayList<Transaction>(List.of(
+            new Wallet().createTransaction(new  Wallet().getPublicKey(), 10, 0),
+            w.createTransaction(new Wallet().getPublicKey(), 15, 0),
+            new Wallet().createTransaction(new Wallet().getPublicKey(), 30, 0),
+            new Wallet().createTransaction(new Wallet().getPublicKey(), 30, 0)
+        ));
+
+        assertFalse(MerkleUtil.verifyProof(
+            l.get(0).getTransactionId(), 
+            MerkleUtil.generateProof(l, 1), 
+            MerkleUtil.calculateMerkleRoot(l))
+        );
+    }
+
+    @Test 
+    void testTamperedSiblingHashRejected() {
+        Wallet w = new Wallet();
+        List<Transaction> l = new ArrayList<Transaction>(List.of(
+            new Wallet().createTransaction(new  Wallet().getPublicKey(), 10, 0),
+            w.createTransaction(new Wallet().getPublicKey(), 15, 0),
+            new Wallet().createTransaction(new Wallet().getPublicKey(), 30, 0),
+            new Wallet().createTransaction(new Wallet().getPublicKey(), 30, 0)
+        ));
+
+        List<MerkleProofStep> proof = new ArrayList<>(MerkleUtil.generateProof(l, 1));
+        MerkleProofStep original = proof.get(0);
+
+        proof.set(0, new MerkleProofStep("random", original.getPosition()));
+
+        assertFalse(MerkleUtil.verifyProof(
+            l.get(1).getTransactionId(), 
+            proof, 
+            MerkleUtil.calculateMerkleRoot(l))
+        );
+    }
+    
+    @Test 
+    void testWrongMerkleRootRejected() {
+        Wallet w = new Wallet();
+        List<Transaction> l = new ArrayList<Transaction>(List.of(
+            new Wallet().createTransaction(new  Wallet().getPublicKey(), 10, 0),
+            w.createTransaction(new Wallet().getPublicKey(), 15, 0),
+            new Wallet().createTransaction(new Wallet().getPublicKey(), 30, 0),
+            new Wallet().createTransaction(new Wallet().getPublicKey(), 30, 0)
+        ));
+
+        assertFalse(MerkleUtil.verifyProof(
+            l.get(1).getTransactionId(), 
+            MerkleUtil.generateProof(l, 1), 
+            HashUtil.sha256("random"))
+        );
+    }
+
+    @Test 
+    void testSingleTransactionEmptyProofValid() {
+        List<Transaction> l = new ArrayList<Transaction>(List.of(
+            new Wallet().createTransaction(new  Wallet().getPublicKey(), 10, 0)));
+
+        String root = MerkleUtil.calculateMerkleRoot(l);
+        List<MerkleProofStep> proof = MerkleUtil.generateProof(l, 0);
+
+        assertTrue(proof.isEmpty());
+
+        assertTrue(MerkleUtil.verifyProof(l.get(0).getTransactionId(), proof, root));
+    }
+
+    @Test
+    void testProofWorksForOddTransactionCount() {
+        Wallet w = new Wallet();
+        List<Transaction> l = new ArrayList<Transaction>(List.of(
+            new Wallet().createTransaction(new  Wallet().getPublicKey(), 10, 0),
+            w.createTransaction(new Wallet().getPublicKey(), 15, 0),
+            new Wallet().createTransaction(new Wallet().getPublicKey(), 30, 0)
+        ));
+
+        assertTrue(MerkleUtil.verifyProof(
+            l.get(1).getTransactionId(), 
+            MerkleUtil.generateProof(l,1),
+            MerkleUtil.calculateMerkleRoot(l)
+        ));
     }
 }
