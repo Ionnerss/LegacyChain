@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: LegacyChain.BlockchainTest
--------------------------------------------------------------------------------
-Tests run: 45, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.176 s -- in LegacyChain.BlockchainTest
