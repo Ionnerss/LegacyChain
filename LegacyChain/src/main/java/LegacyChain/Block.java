@@ -21,9 +21,9 @@ public class Block {
 		this.previousHash = previousHash;
 		this.timeStamp = new Date().getTime();
 		this.nonce = 0;
-        this.hash = calculateHash();
 		this.merkleRoot = MerkleUtil.calculateMerkleRoot(transactions);
 		this.height = height;
+        this.hash = calculateHash();
 	}
 
 	public String getHash() { return this.hash; }

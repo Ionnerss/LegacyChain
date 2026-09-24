@@ -172,8 +172,8 @@ public class MerkleUtilTest {
         ));
 
         assertTrue(MerkleUtil.verifyProof(
-            l.get(1).getTransactionId(), 
-            MerkleUtil.generateProof(l,1),
+            l.get(2).getTransactionId(), 
+            MerkleUtil.generateProof(l,2),
             MerkleUtil.calculateMerkleRoot(l)
         ));
     }

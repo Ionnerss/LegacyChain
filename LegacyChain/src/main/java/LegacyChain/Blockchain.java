@@ -10,6 +10,7 @@ import LegacyChain.Transaction.TransactionType;
 
 public class Blockchain {
     private ArrayList<Block> chain;
+    private final List<Transaction> pendingTransactions = new ArrayList<>();
     private int difficulty;
     private final long BLOCK_REWARD = 50;
 
@@ -30,6 +31,8 @@ public class Blockchain {
     public Block getBlock(int index) { return chain.get(index); }
 
     public Block getLatestBlock() { return chain.get(chain.size() - 1); }
+
+    public List<Transaction> getPendingTransactions() { return List.copyOf(this.pendingTransactions); }
 
     public int getNextNonce(PublicKey sender) {
         if (sender == null)
@@ -99,6 +102,32 @@ public class Blockchain {
         return nBlock;
     }
 
+    public void submitTransaction(Transaction transaction) {
+        if (transaction == null || transaction.getType() == TransactionType.REWARD || !transaction.isValid())
+            throw new IllegalArgumentException("Invalid transaction.");
+
+        long availableBalance = getBalance(transaction.getSender());
+        int expectedNonce = getNextNonce(transaction.getSender());
+
+        for (Transaction t : pendingTransactions) {
+            if (transaction.getTransactionId().equals(t))
+                throw new IllegalArgumentException("Invalid, transaction already pending.");
+
+            if (t.getRecipient().equals(transaction.getSender()))
+                availableBalance += t.getAmount();
+
+            if (t.getSender().equals(transaction.getSender())) {
+                availableBalance -= t.getAmount();
+                expectedNonce++;
+            }
+        }
+
+        if (transaction.getTransactionNonce() != expectedNonce || transaction.getAmount() > availableBalance)
+            throw new IllegalArgumentException("Invalid transaction.");
+
+        pendingTransactions.add(transaction);
+    }
+ 
     public boolean isValid() {
         String target = "0".repeat(difficulty);
         Block genesis = chain.get(0);
