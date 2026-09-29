@@ -325,8 +325,8 @@ public class BlockchainTest {
 
         assertThrows(IllegalArgumentException.class, () -> {
             k.addBlock(new ArrayList<Transaction>(List.of(
-                miner.createTransaction(w.getPublicKey(), (long)30, 1),
-                miner.createTransaction(w.getPublicKey(), 30, 2)
+                miner.createTransaction(w.getPublicKey(), (long)30, 0),
+                miner.createTransaction(w.getPublicKey(), 30, 1)
             )), new Wallet().getPublicKey());
         });
 
@@ -568,6 +568,18 @@ public class BlockchainTest {
     }
 
     @Test 
+    void testInvalidTransactionRejected() {
+        Blockchain k = new Blockchain(2);
+        Wallet w = new Wallet();
+
+        k.addBlock(new ArrayList<Transaction>(), w.getPublicKey());
+        Transaction a = w.createTransaction(new Wallet().getPublicKey(), 600, 0);
+
+        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> k.submitTransaction(a));
+        assertEquals("Invalid transaction.", ex.getMessage());
+    }
+
+    @Test 
     void testDuplicatePendingTransactionRejected() {
         Blockchain k = new Blockchain(2);
         Wallet w = new Wallet();
@@ -576,11 +588,131 @@ public class BlockchainTest {
         Transaction t = w.createTransaction(new Wallet().getPublicKey(), 10, 0);
 
         assertDoesNotThrow(() -> k.submitTransaction(t));
-        assertThrows(IllegalArgumentException.class, () -> k.submitTransaction(t));
+        
+        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> k.submitTransaction(t));
+        assertEquals("Invalid, transaction already pending.", ex.getMessage());
+        assertEquals(1, k.getPendingTransactions().size());
     }
 
     @Test 
     void testSequentialPendingNoncesAccepted() {
+        Blockchain k = new Blockchain(2);
+        Wallet w = new Wallet(), j = new Wallet();
 
+        k.addBlock(new ArrayList<Transaction>(), w.getPublicKey());
+        Transaction a = w.createTransaction(j.getPublicKey(), 10, 0);
+        Transaction b = w.createTransaction(j.getPublicKey(), 15, 1);
+        
+        assertDoesNotThrow(() -> k.submitTransaction(a));
+        assertDoesNotThrow(() -> k.submitTransaction(b));
+        assertEquals(2, k.getPendingTransactions().size());
+        assertEquals(a, k.getPendingTransactions().get(0));
+        assertEquals(b, k.getPendingTransactions().get(1));
+    }
+
+    @Test 
+    void testSkippedPendingNonceRejected() {
+        Blockchain k = new Blockchain(2);
+        Wallet w = new Wallet(), j = new Wallet();
+
+        k.addBlock(new ArrayList<Transaction>(), w.getPublicKey());
+        Transaction a = w.createTransaction(j.getPublicKey(), 10, 0);
+        Transaction b = w.createTransaction(j.getPublicKey(), 15, 2);
+
+        assertDoesNotThrow(() -> k.submitTransaction(a));
+        assertThrows(IllegalArgumentException.class, () -> k.submitTransaction(b));
+    }
+
+    @Test 
+    void testOldPendingNonceRejected() {
+        Blockchain k = new Blockchain(2);
+        Wallet w = new Wallet(), j = new Wallet();
+
+        k.addBlock(new ArrayList<Transaction>(), w.getPublicKey());
+        Transaction a = w.createTransaction(j.getPublicKey(), 10, 0);
+        Transaction b = w.createTransaction(j.getPublicKey(), 15, 0);
+
+        assertDoesNotThrow(() -> k.submitTransaction(a));
+        assertThrows(IllegalArgumentException.class, () -> k.submitTransaction(b));
+    }
+
+    @Test 
+    void testPendingTransactionsCannotOverspend() {
+        Blockchain k = new Blockchain(2);
+        Wallet w = new Wallet(), j = new Wallet();
+
+        k.addBlock(new ArrayList<Transaction>(), w.getPublicKey());
+        Transaction a = w.createTransaction(j.getPublicKey(), 10, 0);
+        Transaction b = w.createTransaction(j.getPublicKey(), 70, 1);
+
+        assertDoesNotThrow(() -> k.submitTransaction(a));
+        assertThrows(IllegalArgumentException.class, () -> k.submitTransaction(b));
+    }
+
+    @Test 
+    void testExactPendingBalanceCanBeSpent() {
+        Blockchain k = new Blockchain(2);
+        Wallet w = new Wallet(), j = new Wallet();
+
+        k.addBlock(new ArrayList<Transaction>(), w.getPublicKey());
+        Transaction a = w.createTransaction(j.getPublicKey(), 10, 0);
+        Transaction b = w.createTransaction(j.getPublicKey(), 40, 1);
+
+        assertDoesNotThrow(() -> k.submitTransaction(a));
+        assertDoesNotThrow(() -> k.submitTransaction(b));
+    }
+
+    @Test 
+    void testPendingIncomingFundsCanBeSpent() {
+        Blockchain k = new Blockchain(2);
+        Wallet a = new Wallet(), b = new Wallet(), c = new Wallet();
+
+        k.addBlock(new ArrayList<Transaction>(), a.getPublicKey());
+
+        Transaction t1 = a.createTransaction(b.getPublicKey(), 30, 0);
+        k.submitTransaction(t1);
+        assertEquals(0, k.getBalance(b.getPublicKey()));
+
+        Transaction t2 = b.createTransaction(c.getPublicKey(), 20, 0);
+        assertDoesNotThrow(() -> k.submitTransaction(t2));
+    }
+
+    @Test 
+    void testCannotSpendPendingFundsBeforeTheyArrive() {
+        Blockchain k = new Blockchain(2);
+        Wallet a = new Wallet(), b = new Wallet(), c = new Wallet();
+
+        k.addBlock(new ArrayList<Transaction>(), a.getPublicKey());
+        Transaction t2 = b.createTransaction(c.getPublicKey(), 20, 0);
+
+        assertThrows(IllegalArgumentException.class, () -> k.submitTransaction(t2));
+        assertEquals(0, k.getPendingTransactions().size());
+    }
+
+    @Test 
+    void testAlreadyMinedTransactionCannotBeResubmitted() {
+        Blockchain k = new Blockchain(2);
+        Wallet a = new Wallet(), b = new Wallet();
+
+        k.addBlock(new ArrayList<Transaction>(), a.getPublicKey());
+        Transaction t1 = a.createTransaction(b.getPublicKey(), 10, 0);
+        k.submitTransaction(t1);
+        k.addBlock(new ArrayList<Transaction>(List.of(t1)), new Wallet().getPublicKey());
+
+        assertThrows(IllegalArgumentException.class, () -> k.submitTransaction(t1));
+    }
+
+    @Test 
+    void testGetNextNonceIgnoresPendingTransactions() {
+        Blockchain k = new Blockchain(2);
+        Wallet a = new Wallet(), b = new Wallet();
+
+        k.addBlock(new ArrayList<Transaction>(), a.getPublicKey());
+        assertEquals(0, k.getNextNonce(a.getPublicKey()));
+
+        Transaction t1 = a.createTransaction(b.getPublicKey(), 20, 0);
+        k.submitTransaction(t1);
+        assertTrue(k.getPendingTransactions().contains(t1));
+        assertEquals(0, k.getNextNonce(a.getPublicKey()));
     }
 }

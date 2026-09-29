@@ -110,7 +110,7 @@ public class Blockchain {
         int expectedNonce = getNextNonce(transaction.getSender());
 
         for (Transaction t : pendingTransactions) {
-            if (transaction.getTransactionId().equals(t))
+            if (transaction.getTransactionId().equals(t.getTransactionId()))
                 throw new IllegalArgumentException("Invalid, transaction already pending.");
 
             if (t.getRecipient().equals(transaction.getSender()))
@@ -135,7 +135,8 @@ public class Blockchain {
             || !genesis.getHash().startsWith(target)
             || !genesis.getTransactions().isEmpty()
             || !"0".equals(genesis.getPreviousHash())
-            || genesis.getHeight() != 0)
+            || genesis.getHeight() != 0
+            || !genesis.getMerkleRoot().equals(MerkleUtil.calculateMerkleRoot(new ArrayList<Transaction>())))
             return false;
 
         Map<PublicKey, Long> tempBalances = new HashMap<>();
