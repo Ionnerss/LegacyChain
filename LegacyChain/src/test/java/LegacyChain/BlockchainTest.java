@@ -573,8 +573,9 @@ public class BlockchainTest {
         Wallet w = new Wallet();
 
         k.addBlock(new ArrayList<Transaction>(), w.getPublicKey());
-        Transaction a = w.createTransaction(new Wallet().getPublicKey(), 600, 0);
-
+        Transaction a = new Transaction(w.getPublicKey(), new Wallet().getPublicKey(), 
+            10, new Wallet().sign("random"), 0);
+        
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> k.submitTransaction(a));
         assertEquals("Invalid transaction.", ex.getMessage());
     }
@@ -696,7 +697,6 @@ public class BlockchainTest {
 
         k.addBlock(new ArrayList<Transaction>(), a.getPublicKey());
         Transaction t1 = a.createTransaction(b.getPublicKey(), 10, 0);
-        k.submitTransaction(t1);
         k.addBlock(new ArrayList<Transaction>(List.of(t1)), new Wallet().getPublicKey());
 
         assertThrows(IllegalArgumentException.class, () -> k.submitTransaction(t1));
