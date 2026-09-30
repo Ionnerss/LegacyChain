@@ -48,7 +48,40 @@ public class Blockchain {
         return nextNonce;
     }
 
-    public Block addBlock(List<Transaction> transactions, PublicKey miner) {
+    public void submitTransaction(Transaction transaction) {
+        if (transaction == null || transaction.getType() == TransactionType.REWARD || !transaction.isValid())
+            throw new IllegalArgumentException("Invalid transaction.");
+
+        long availableBalance = getBalance(transaction.getSender());
+        int expectedNonce = getNextNonce(transaction.getSender());
+
+        for (Transaction t : pendingTransactions) {
+            if (transaction.getTransactionId().equals(t.getTransactionId()))
+                throw new IllegalArgumentException("Invalid, transaction already pending.");
+
+            if (t.getRecipient().equals(transaction.getSender()))
+                availableBalance += t.getAmount();
+
+            if (t.getSender().equals(transaction.getSender())) {
+                availableBalance -= t.getAmount();
+                expectedNonce++;
+            }
+        }
+
+        if (transaction.getTransactionNonce() != expectedNonce || transaction.getAmount() > availableBalance)
+            throw new IllegalArgumentException("Invalid transaction.");
+
+        pendingTransactions.add(transaction);
+    }
+
+    public Block minePendingTransactions(PublicKey miner) {
+        List<Transaction> pendingCopy = new ArrayList<>(pendingTransactions);
+        Block nBlock = addBlock(pendingCopy, miner);
+        pendingTransactions.clear();
+        return nBlock;
+    }
+
+    Block addBlock(List<Transaction> transactions, PublicKey miner) {
         if (transactions == null) throw new IllegalArgumentException("Invalid transactions list.");
         if (miner == null) throw new IllegalArgumentException("Invalid miner key.");
         
@@ -100,32 +133,6 @@ public class Blockchain {
         nBlock.mineBlock(difficulty);
         chain.add(nBlock);
         return nBlock;
-    }
-
-    public void submitTransaction(Transaction transaction) {
-        if (transaction == null || transaction.getType() == TransactionType.REWARD || !transaction.isValid())
-            throw new IllegalArgumentException("Invalid transaction.");
-
-        long availableBalance = getBalance(transaction.getSender());
-        int expectedNonce = getNextNonce(transaction.getSender());
-
-        for (Transaction t : pendingTransactions) {
-            if (transaction.getTransactionId().equals(t.getTransactionId()))
-                throw new IllegalArgumentException("Invalid, transaction already pending.");
-
-            if (t.getRecipient().equals(transaction.getSender()))
-                availableBalance += t.getAmount();
-
-            if (t.getSender().equals(transaction.getSender())) {
-                availableBalance -= t.getAmount();
-                expectedNonce++;
-            }
-        }
-
-        if (transaction.getTransactionNonce() != expectedNonce || transaction.getAmount() > availableBalance)
-            throw new IllegalArgumentException("Invalid transaction.");
-
-        pendingTransactions.add(transaction);
     }
  
     public boolean isValid() {

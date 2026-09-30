@@ -715,4 +715,142 @@ public class BlockchainTest {
         assertTrue(k.getPendingTransactions().contains(t1));
         assertEquals(0, k.getNextNonce(a.getPublicKey()));
     }
+
+    @Test 
+    void testMinePendingTransactionsAddsBlockAndClearsMempool() {
+        Blockchain k = new Blockchain(2);
+        Wallet a = new Wallet(), b = new Wallet(), w = new Wallet();
+
+        k.addBlock(new ArrayList<Transaction>(), a.getPublicKey());
+        Transaction t1 = a.createTransaction(b.getPublicKey(), 10, 0);
+        Transaction t2 = a.createTransaction(b.getPublicKey(), 15, 1);
+        k.submitTransaction(t1);
+        k.submitTransaction(t2);
+
+        assertEquals(2, k.getPendingTransactions().size());
+        assertEquals(2, k.size());
+
+        k.minePendingTransactions(w.getPublicKey());
+
+        assertEquals(0, k.getPendingTransactions().size());
+        assertEquals(3, k.size());
+        assertEquals(3, k.getLatestBlock().getTransactions().size());
+        assertEquals(t1, k.getLatestBlock().getTransactions().get(0));
+        assertEquals(t2, k.getLatestBlock().getTransactions().get(1));
+        assertEquals(TransactionType.REWARD, k.getLatestBlock().getTransactions().getLast().getType());
+        assertEquals(w.getPublicKey(), k.getLatestBlock().getTransactions().getLast().getRecipient());
+    }
+
+    @Test 
+    void testMinePendingTransactionsNullMinerPreservesMempool() {
+        Blockchain k = new Blockchain(2);
+        Wallet a = new Wallet(), b = new Wallet();
+
+        k.addBlock(new ArrayList<Transaction>(), a.getPublicKey());
+        Transaction t1 = a.createTransaction(b.getPublicKey(), 10, 0);
+        k.submitTransaction(t1);
+        assertEquals(1, k.getPendingTransactions().size());
+        assertEquals(2, k.size());
+
+        assertThrows(IllegalArgumentException.class, () -> k.minePendingTransactions(null));
+        assertEquals(1, k.getPendingTransactions().size());
+        assertEquals(t1, k.getPendingTransactions().get(0));
+        assertEquals(2, k.size());
+    }
+
+    @Test 
+    void testMinePendingTransactionsEmptyMempoolMinesRewardOnlyBlock() {
+        Blockchain k = new Blockchain(2);
+        Wallet w = new Wallet();
+
+        assertEquals(0, k.getPendingTransactions().size());
+        assertEquals(1, k.size());
+
+        assertDoesNotThrow(() -> k.minePendingTransactions(w.getPublicKey()));
+        assertEquals(0, k.getPendingTransactions().size());
+        assertEquals(2, k.size());
+        assertEquals(1, k.getLatestBlock().getTransactions().size());
+        assertEquals(TransactionType.REWARD, k.getLatestBlock().getTransactions().get(0).getType());
+        assertEquals(w.getPublicKey(), k.getLatestBlock().getTransactions().get(0).getRecipient());
+        assertEquals(50, k.getBalance(w.getPublicKey()));
+    }
+
+    @Test 
+    void testMiningPendingTransactionsUpdatesConfirmedState() {
+        Blockchain k = new Blockchain(2);
+        Wallet a = new Wallet(), b = new Wallet(), w = new Wallet();
+
+        k.minePendingTransactions(a.getPublicKey());
+        Transaction t1 = a.createTransaction(b.getPublicKey(), 20, 0);
+        k.submitTransaction(t1);
+
+        assertEquals(50, k.getBalance(a.getPublicKey()));
+        assertEquals(0, k.getBalance(b.getPublicKey()));
+        assertEquals(0, k.getNextNonce(a.getPublicKey()));
+        assertEquals(1, k.getPendingTransactions().size());
+
+        k.minePendingTransactions(w.getPublicKey());
+        assertEquals(30, k.getBalance(a.getPublicKey()));
+        assertEquals(20, k.getBalance(b.getPublicKey()));
+        assertEquals(1, k.getNextNonce(a.getPublicKey()));
+        assertEquals(0, k.getPendingTransactions().size());
+        assertTrue(k.isValid());
+    }
+
+    @Test 
+    void testMinePendingDependentTransactionsInOrder() {
+        Blockchain k = new Blockchain(2);
+        Wallet a = new Wallet(), b = new Wallet(), c = new Wallet(), w = new Wallet();
+
+        k.minePendingTransactions(a.getPublicKey());
+        Transaction t1 = a.createTransaction(b.getPublicKey(), 30, 0);
+        Transaction t2 = b.createTransaction(c.getPublicKey(), 20, 0);
+        k.submitTransaction(t1);
+        k.submitTransaction(t2);
+        assertEquals(t1, k.getPendingTransactions().get(0));
+        assertEquals(t2, k.getPendingTransactions().get(1));
+
+        assertDoesNotThrow(() -> k.minePendingTransactions(w.getPublicKey()));
+        assertEquals(20, k.getBalance(a.getPublicKey()));
+        assertEquals(10, k.getBalance(b.getPublicKey()));
+        assertEquals(20, k.getBalance(c.getPublicKey()));
+        assertEquals(0, k.getPendingTransactions().size());
+        assertEquals(1, k.getNextNonce(a.getPublicKey()));
+        assertEquals(1, k.getNextNonce(b.getPublicKey()));
+        assertEquals(0, k.getNextNonce(c.getPublicKey()));
+        assertTrue(k.isValid());
+    }
+
+    @Test 
+    void testCanSubmitNextNonceAfterMiningPendingTransactions() {
+        Blockchain k = new Blockchain(2);
+        Wallet a = new Wallet();
+
+        k.minePendingTransactions(a.getPublicKey());
+        Transaction t1 = a.createTransaction(new Wallet().getPublicKey(), 11, 0);
+        Transaction t2 = a.createTransaction(new Wallet().getPublicKey(), 22, 1);
+        k.submitTransaction(t1);
+        k.submitTransaction(t2);
+        k.minePendingTransactions(new Wallet().getPublicKey());
+        assertEquals(2, k.getNextNonce(a.getPublicKey()));
+
+        Transaction t3 = a.createTransaction(new Wallet().getPublicKey(), 6, 2);
+        assertDoesNotThrow(() -> k.submitTransaction(t3));
+        assertEquals(1, k.getPendingTransactions().size());
+        assertEquals(t3, k.getPendingTransactions().get(0));
+    }
+
+    @Test 
+    void testSubmittedProcessedBlockIsSameAsBlockchainLastBlock() {
+        Blockchain k = new Blockchain(2);
+        Wallet a = new Wallet();
+
+        k.minePendingTransactions(a.getPublicKey());
+        Transaction t1 = a.createTransaction(new Wallet().getPublicKey(), 11, 0);
+        k.submitTransaction(t1);
+        Block b = k.minePendingTransactions(new Wallet().getPublicKey());
+        assertSame(b, k.getLatestBlock());
+    }
+
+
 }
