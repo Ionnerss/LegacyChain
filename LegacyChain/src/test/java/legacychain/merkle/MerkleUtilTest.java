@@ -1,4 +1,4 @@
-package LegacyChain;
+package legacychain.merkle;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -7,7 +7,10 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import LegacyChain.MerkleUtil.MerkleProofStep;
+import legacychain.core.Transaction;
+import legacychain.crypto.HashUtil;
+import legacychain.merkle.MerkleUtil.MerkleProofStep;
+import legacychain.wallet.Wallet;
 
 public class MerkleUtilTest {
     @Test 

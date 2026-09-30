@@ -1,6 +1,9 @@
-package LegacyChain;
+package legacychain.wallet;
 
 import org.junit.jupiter.api.Test;
+
+import legacychain.core.Transaction;
+import legacychain.crypto.SignatureUtil;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class WalletTest {

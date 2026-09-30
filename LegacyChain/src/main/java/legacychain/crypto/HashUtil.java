@@ -1,11 +1,11 @@
-package LegacyChain;
+package legacychain.crypto;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class HashUtil {
-    static String sha256(String input) {
+    public static String sha256(String input) {
         StringBuilder sb = new StringBuilder(); //less space usage
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");

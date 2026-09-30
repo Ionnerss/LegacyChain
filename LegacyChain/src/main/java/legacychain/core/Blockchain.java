@@ -1,4 +1,4 @@
-package LegacyChain;
+package legacychain.core;
 
 import java.security.PublicKey;
 import java.util.ArrayList;
@@ -6,7 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import LegacyChain.Transaction.TransactionType;
+import legacychain.core.Transaction.TransactionType;
+import legacychain.merkle.MerkleUtil;
 
 public class Blockchain {
     private ArrayList<Block> chain;

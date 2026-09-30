@@ -1,7 +1,10 @@
-package LegacyChain;
+package legacychain.merkle;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import legacychain.core.Transaction;
+import legacychain.crypto.HashUtil;
 
 public class MerkleUtil {
 
@@ -87,7 +90,7 @@ public class MerkleUtil {
         return new MerkleTree(root, leaves);
     }
 
-    static String calculateMerkleRoot(List<Transaction> transactions) {
+    public static String calculateMerkleRoot(List<Transaction> transactions) {
         if (transactions == null) 
             throw new IllegalArgumentException("Invalid transactions.");
         else if (transactions.isEmpty())

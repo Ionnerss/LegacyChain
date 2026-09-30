@@ -1,7 +1,10 @@
-package LegacyChain;
+package legacychain.core;
 
 import java.util.Date;
 import java.util.List;
+
+import legacychain.crypto.HashUtil;
+import legacychain.merkle.MerkleUtil;
 
 public class Block {
     private String hash;

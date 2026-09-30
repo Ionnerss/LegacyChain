@@ -1,4 +1,4 @@
-package LegacyChain;
+package legacychain.crypto;
 
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;

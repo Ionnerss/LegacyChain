@@ -1,4 +1,4 @@
-package LegacyChain;
+package legacychain.wallet;
 
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
@@ -8,6 +8,8 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.Signature;
 import java.security.SignatureException;
+
+import legacychain.core.Transaction;
 
 public class Wallet {
     private final PrivateKey privateKey;

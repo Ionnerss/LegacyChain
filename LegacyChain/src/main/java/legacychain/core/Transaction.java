@@ -1,8 +1,11 @@
-package LegacyChain;
+package legacychain.core;
 
 import java.security.PublicKey;
 import java.util.Arrays;
 import java.util.Base64;
+
+import legacychain.crypto.HashUtil;
+import legacychain.crypto.SignatureUtil;
 
 public class Transaction {
     private final PublicKey sender;
@@ -82,7 +85,7 @@ public class Transaction {
         else throw new IllegalArgumentException("Invalid transaction data.");
     }
 
-    static String signingData(PublicKey sender, PublicKey recipient, long amount, int transactionNonce) {
+    public static String signingData(PublicKey sender, PublicKey recipient, long amount, int transactionNonce) {
         return TransactionType.NORMAL + "|" + Base64.getEncoder().encodeToString(sender.getEncoded())
             + "|" + Base64.getEncoder().encodeToString(recipient.getEncoded())
             + "|" + amount + "|" + transactionNonce;
