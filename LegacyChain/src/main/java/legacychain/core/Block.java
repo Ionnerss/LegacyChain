@@ -1,5 +1,6 @@
 package legacychain.core;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -24,7 +25,7 @@ public class Block {
 		this.previousHash = previousHash;
 		this.timeStamp = new Date().getTime();
 		this.nonce = 0;
-		this.merkleRoot = MerkleUtil.calculateMerkleRoot(transactions);
+		this.merkleRoot = MerkleUtil.calculateMerkleRoot(getTransactionIds());
 		this.height = height;
         this.hash = calculateHash();
 	}
@@ -58,5 +59,13 @@ public class Block {
 			candidateHash = calculateHash();
 		}
 		this.hash = candidateHash;
+	}
+
+	List<String> getTransactionIds() {
+		List<String> transactionIds = new ArrayList<>();
+		for (Transaction t : this.transactions) {
+			transactionIds.add(t.getTransactionId());
+		}
+		return List.copyOf(transactionIds);
 	}
 }

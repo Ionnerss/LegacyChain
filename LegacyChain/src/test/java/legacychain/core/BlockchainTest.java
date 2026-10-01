@@ -52,8 +52,7 @@ public class BlockchainTest {
         Blockchain k = new Blockchain(2);
 
         //Act:
-        Wallet w = new Wallet(), j = new Wallet(), miner = new Wallet();
-        k.addBlock(new ArrayList<Transaction>(), miner.getPublicKey());
+        k.addBlock(new ArrayList<Transaction>(), new Wallet().getPublicKey());
 
         /*
         Assert:
@@ -73,8 +72,7 @@ public class BlockchainTest {
             Add one block
             Keep the Block returned by addBlock()
         */
-        Wallet w = new Wallet(), j = new Wallet(), miner = new Wallet();
-        Block b = k.addBlock(new ArrayList<Transaction>(), miner.getPublicKey());
+        Block b = k.addBlock(new ArrayList<Transaction>(), new Wallet().getPublicKey());
 
         /*
         Assert:
@@ -89,7 +87,6 @@ public class BlockchainTest {
         Blockchain k = new Blockchain(2);
 
         // Act: add four blocks and print their hashes for manual verification
-        Wallet w = new Wallet(), j = new Wallet();
         k.addBlock(new ArrayList<Transaction>(), new Wallet().getPublicKey());
         k.addBlock(new ArrayList<Transaction>(), new Wallet().getPublicKey());
         k.addBlock(new ArrayList<Transaction>(), new Wallet().getPublicKey());
@@ -106,7 +103,6 @@ public class BlockchainTest {
         String target = "00";
 
         //Act:
-        Wallet w = new Wallet();
         Block j = k.addBlock(new ArrayList<Transaction>(), new Wallet().getPublicKey());
 
         //Assert:
@@ -118,11 +114,8 @@ public class BlockchainTest {
     void testBlockTransactionListImmutability() {
         Blockchain k = new Blockchain(2);
 
-        Wallet w = new Wallet(), j = new Wallet();
         ArrayList<Transaction> b = new ArrayList<Transaction>();
-
         Block s = k.addBlock(b, new Wallet().getPublicKey());
-
         b.add(new Wallet().createTransaction(new Wallet().getPublicKey(), 300, 0));
 
         assertNotEquals(s.getTransactions(), b);
@@ -321,7 +314,7 @@ public class BlockchainTest {
     @Test 
     void testRejectedOverspendingBlockDoesNotChangeChainSize() {
         Blockchain k = new Blockchain(2);
-        Wallet miner = new Wallet(), w = new Wallet(), j = new Wallet();
+        Wallet miner = new Wallet(), w = new Wallet();
 
         k.addBlock(new ArrayList<Transaction>(), miner.getPublicKey());
 
@@ -480,14 +473,14 @@ public class BlockchainTest {
             w.createTransaction(new Wallet().getPublicKey(), 10, 1)
         )), new Wallet().getPublicKey());
 
-        assertEquals(MerkleUtil.calculateMerkleRoot(k.getLatestBlock().getTransactions()), k.getLatestBlock().getMerkleRoot());
+        assertEquals(MerkleUtil.calculateMerkleRoot(k.getLatestBlock().getTransactionIds()), k.getLatestBlock().getMerkleRoot());
 
     }
 
     @Test 
     void testGenesisHasEmptyMerkleRoot() {
         Blockchain k = new Blockchain(2);
-        assertEquals(MerkleUtil.calculateMerkleRoot(new ArrayList<Transaction>()), k.getLatestBlock().getMerkleRoot());
+        assertEquals(MerkleUtil.calculateMerkleRoot(new ArrayList<String>()), k.getLatestBlock().getMerkleRoot());
     }
 
     @Test 
@@ -504,7 +497,7 @@ public class BlockchainTest {
             w.createTransaction(new Wallet().getPublicKey(), 7, 4)
         )), new Wallet().getPublicKey());
 
-        assertEquals(MerkleUtil.calculateMerkleRoot(k.getLatestBlock().getTransactions()), k.getLatestBlock().getMerkleRoot());
+        assertEquals(MerkleUtil.calculateMerkleRoot(k.getLatestBlock().getTransactionIds()), k.getLatestBlock().getMerkleRoot());
     }
 
     @Test 

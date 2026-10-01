@@ -1,16 +1,11 @@
 package legacychain.merkle;
 
 import static org.junit.jupiter.api.Assertions.*;
-
+import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
-import legacychain.core.Transaction;
 import legacychain.crypto.HashUtil;
 import legacychain.merkle.MerkleUtil.MerkleProofStep;
-import legacychain.wallet.Wallet;
 
 public class MerkleUtilTest {
     @Test 
@@ -19,165 +14,159 @@ public class MerkleUtilTest {
     }
 
     @Test 
-    void testEmptyListProducesEmptyMerkleRoot() {
+    void testEmptyTransactionIdListProducesEmptyMerkleRoot() {
         assertEquals(HashUtil.sha256(""), MerkleUtil.calculateMerkleRoot(new ArrayList<>()));
     }
 
     @Test 
-    void testSingleTransactionIsMerkleRoot() {
-        Wallet w = new Wallet();
-        Transaction t = w.createTransaction(new Wallet().getPublicKey(), 10, 0);
-        assertEquals(t.getTransactionId(), MerkleUtil.calculateMerkleRoot(new ArrayList<Transaction>(List.of(t))));
+    void testSingleTransactionIdIsMerkleRoot() {
+        String someTransactionId = HashUtil.sha256("input");
+        assertEquals(someTransactionId, MerkleUtil.calculateMerkleRoot(new ArrayList<String>(List.of(someTransactionId))));
     }
 
     @Test 
-    void testTwoTransactionsProduceCorrectMerkleRoot() {
-        Wallet w = new Wallet();
-        Transaction a = w.createTransaction(new Wallet().getPublicKey(), 10, 0);
-        Transaction b = w.createTransaction(new Wallet().getPublicKey(), 20, 0);
-        assertEquals(HashUtil.sha256(a.getTransactionId() + b.getTransactionId()), 
-            MerkleUtil.calculateMerkleRoot(new ArrayList<Transaction>(List.of(a, b)))
+    void testTwoTransactionIdsProduceCorrectMerkleRoot() {
+        String a = HashUtil.sha256("inputA"), b = HashUtil.sha256("inputB");
+        assertEquals(HashUtil.sha256(a + b), 
+            MerkleUtil.calculateMerkleRoot(new ArrayList<String>(List.of(a, b)))
         );
     }
 
     @Test 
-    void testOddTransactionCountDuplicatesLastHash() {
-        Wallet w = new Wallet();
-        Transaction a = w.createTransaction(new Wallet().getPublicKey(), 10, 0);
-        Transaction b = w.createTransaction(new Wallet().getPublicKey(), 20, 0);
-        Transaction c = w.createTransaction(new Wallet().getPublicKey(), 30, 0);
+    void testOddTransactionIdCountDuplicatesLastHash() {
+        String a = HashUtil.sha256("inputA"), b = HashUtil.sha256("inputB"), c = HashUtil.sha256("inputC");
+        assertEquals(
+            HashUtil.sha256( HashUtil.sha256(a + b) + HashUtil.sha256(c + c)),
+            MerkleUtil.calculateMerkleRoot(new ArrayList<String>(List.of(a, b, c)))       
+        );
+    }
+
+    @Test 
+    void testSameTransactionIdsProduceSameMerkleRoot() {
+        String a = HashUtil.sha256("inputA"), b = HashUtil.sha256("inputB");
 
         assertEquals(
-            HashUtil.sha256( HashUtil.sha256(a.getTransactionId() + b.getTransactionId()) 
-            + HashUtil.sha256(c.getTransactionId() + c.getTransactionId())
-            ),
-            MerkleUtil.calculateMerkleRoot(new ArrayList<Transaction>(List.of(a, b, c)))       
+            MerkleUtil.calculateMerkleRoot(new ArrayList<String>(List.of(a, b))),
+            MerkleUtil.calculateMerkleRoot(new ArrayList<String>(List.of(a, b)))
         );
     }
 
     @Test 
-    void testSameTransactionsProduceSameMerkleRoot() {
-        Wallet w = new Wallet();
-        Transaction a = w.createTransaction(new Wallet().getPublicKey(), 10, 0);
-        Transaction b = w.createTransaction(new Wallet().getPublicKey(), 20, 0);
-
-        assertEquals(
-            MerkleUtil.calculateMerkleRoot(new ArrayList<Transaction>(List.of(a, b))),
-            MerkleUtil.calculateMerkleRoot(new ArrayList<Transaction>(List.of(a, b)))
-        );
-    }
-
-    @Test 
-    void testDifferentTransactionProducesDifferentMerkleRoot() {
-        Wallet w = new Wallet();
-        Transaction a = w.createTransaction(new Wallet().getPublicKey(), 10, 0);
-        Transaction b = w.createTransaction(new Wallet().getPublicKey(), 20, 0);
+    void testDifferentTransactionIdsProduceDifferentMerkleRoots() {
+        String a = HashUtil.sha256("inputA"), b = HashUtil.sha256("inputB");
 
         assertNotEquals(
-            MerkleUtil.calculateMerkleRoot(new ArrayList<Transaction>(List.of(a))),
-            MerkleUtil.calculateMerkleRoot(new ArrayList<Transaction>(List.of(b)))
+            MerkleUtil.calculateMerkleRoot(new ArrayList<String>(List.of(a))),
+            MerkleUtil.calculateMerkleRoot(new ArrayList<String>(List.of(b)))
         );
     }
 
     @Test 
-    void testValidMerkleProof() {
-        Wallet w = new Wallet();
-        List<Transaction> l = new ArrayList<Transaction>(List.of(
-            new Wallet().createTransaction(new  Wallet().getPublicKey(), 10, 0),
-            w.createTransaction(new Wallet().getPublicKey(), 15, 0),
-            new Wallet().createTransaction(new Wallet().getPublicKey(), 30, 0),
-            new Wallet().createTransaction(new Wallet().getPublicKey(), 30, 0)
+    void testValidMerkleProofVerifies() {
+        List<String> l = new ArrayList<String>(List.of(
+            HashUtil.sha256("inputA"),
+            HashUtil.sha256("inputB"),
+            HashUtil.sha256("inputC"),
+            HashUtil.sha256("inputD")
         ));
 
-        assertTrue(MerkleUtil.verifyProof(
-            l.get(1).getTransactionId(), 
+        assertTrue(
+            MerkleUtil.verifyProof(l.get(1), 
             MerkleUtil.generateProof(l, 1), 
             MerkleUtil.calculateMerkleRoot(l))
         );
     }
 
     @Test 
-    void testProofForDifferentTransaction() {
-        Wallet w = new Wallet();
-        List<Transaction> l = new ArrayList<Transaction>(List.of(
-            new Wallet().createTransaction(new  Wallet().getPublicKey(), 10, 0),
-            w.createTransaction(new Wallet().getPublicKey(), 15, 0),
-            new Wallet().createTransaction(new Wallet().getPublicKey(), 30, 0),
-            new Wallet().createTransaction(new Wallet().getPublicKey(), 30, 0)
+    void testProofForDifferentTransactionIdFails() {
+        List<String> l = new ArrayList<String>(List.of(
+            HashUtil.sha256("inputA"),
+            HashUtil.sha256("inputB"),
+            HashUtil.sha256("inputC"),
+            HashUtil.sha256("inputD")
         ));
 
         assertFalse(MerkleUtil.verifyProof(
-            l.get(0).getTransactionId(), 
+            l.get(0), 
             MerkleUtil.generateProof(l, 1), 
             MerkleUtil.calculateMerkleRoot(l))
         );
     }
 
     @Test 
-    void testTamperedSiblingHashRejected() {
-        Wallet w = new Wallet();
-        List<Transaction> l = new ArrayList<Transaction>(List.of(
-            new Wallet().createTransaction(new  Wallet().getPublicKey(), 10, 0),
-            w.createTransaction(new Wallet().getPublicKey(), 15, 0),
-            new Wallet().createTransaction(new Wallet().getPublicKey(), 30, 0),
-            new Wallet().createTransaction(new Wallet().getPublicKey(), 30, 0)
+    void testTamperedSiblingHashFailsVerification() {
+        List<String> l = new ArrayList<String>(List.of(
+            HashUtil.sha256("inputA"),
+            HashUtil.sha256("inputB"),
+            HashUtil.sha256("inputC"),
+            HashUtil.sha256("inputD")
         ));
 
         List<MerkleProofStep> proof = new ArrayList<>(MerkleUtil.generateProof(l, 1));
         MerkleProofStep original = proof.get(0);
-
         proof.set(0, new MerkleProofStep("random", original.getPosition()));
 
-        assertFalse(MerkleUtil.verifyProof(
-            l.get(1).getTransactionId(), 
-            proof, 
-            MerkleUtil.calculateMerkleRoot(l))
-        );
+        assertFalse(MerkleUtil.verifyProof(l.get(1), proof, MerkleUtil.calculateMerkleRoot(l)));
     }
     
     @Test 
-    void testWrongMerkleRootRejected() {
-        Wallet w = new Wallet();
-        List<Transaction> l = new ArrayList<Transaction>(List.of(
-            new Wallet().createTransaction(new  Wallet().getPublicKey(), 10, 0),
-            w.createTransaction(new Wallet().getPublicKey(), 15, 0),
-            new Wallet().createTransaction(new Wallet().getPublicKey(), 30, 0),
-            new Wallet().createTransaction(new Wallet().getPublicKey(), 30, 0)
+    void testWrongMerkleRootFailsVerification() {
+        List<String> l = new ArrayList<String>(List.of(
+            HashUtil.sha256("inputA"),
+            HashUtil.sha256("inputB"),
+            HashUtil.sha256("inputC"),
+            HashUtil.sha256("inputD")
         ));
 
         assertFalse(MerkleUtil.verifyProof(
-            l.get(1).getTransactionId(), 
+            l.get(1), 
             MerkleUtil.generateProof(l, 1), 
             HashUtil.sha256("random"))
         );
     }
 
     @Test 
-    void testSingleTransactionEmptyProofValid() {
-        List<Transaction> l = new ArrayList<Transaction>(List.of(
-            new Wallet().createTransaction(new  Wallet().getPublicKey(), 10, 0)));
-
+    void testSingleTransactionIdProducesEmptyValidProof() {
+        List<String> l = new ArrayList<String>(List.of(HashUtil.sha256("inputA")));
         String root = MerkleUtil.calculateMerkleRoot(l);
         List<MerkleProofStep> proof = MerkleUtil.generateProof(l, 0);
 
         assertTrue(proof.isEmpty());
-
-        assertTrue(MerkleUtil.verifyProof(l.get(0).getTransactionId(), proof, root));
+        assertTrue(MerkleUtil.verifyProof(l.get(0), proof, root));
     }
 
     @Test
-    void testProofWorksForOddTransactionCount() {
-        Wallet w = new Wallet();
-        List<Transaction> l = new ArrayList<Transaction>(List.of(
-            new Wallet().createTransaction(new  Wallet().getPublicKey(), 10, 0),
-            w.createTransaction(new Wallet().getPublicKey(), 15, 0),
-            new Wallet().createTransaction(new Wallet().getPublicKey(), 30, 0)
+    void testMerkleProofWorksForOddTransactionIdCount() {
+        List<String> l = new ArrayList<String>(List.of(
+            HashUtil.sha256("inputA"),
+            HashUtil.sha256("inputB"),
+            HashUtil.sha256("inputC")
         ));
 
         assertTrue(MerkleUtil.verifyProof(
-            l.get(2).getTransactionId(), 
+            l.get(2), 
             MerkleUtil.generateProof(l,2),
             MerkleUtil.calculateMerkleRoot(l)
         ));
+    }
+
+    @Test 
+    void testNullTransactionIdRejected() {
+        List<String> l = new ArrayList<String>();
+        l.add(null);
+        assertThrows(IllegalArgumentException.class, () -> 
+            MerkleUtil.calculateMerkleRoot(l));
+    }
+
+    @Test
+    void testEmptyTransactionIdRejected() {
+        assertThrows(IllegalArgumentException.class, () -> 
+            MerkleUtil.calculateMerkleRoot(new ArrayList<String>(List.of(""))));
+    }
+
+    @Test 
+    void testBlankTransactionIdRejected() {
+        assertThrows(IllegalArgumentException.class, () -> 
+            MerkleUtil.calculateMerkleRoot(new ArrayList<String>(List.of("     "))));
     }
 }

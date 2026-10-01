@@ -2,8 +2,6 @@ package legacychain.merkle;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import legacychain.core.Transaction;
 import legacychain.crypto.HashUtil;
 
 public class MerkleUtil {
@@ -54,16 +52,19 @@ public class MerkleUtil {
         public MerklePosition getPosition() { return this.position; }
     }
 
-    private static MerkleTree buildMerkleTree(List<Transaction> transactions) {
-        if (transactions == null || transactions.isEmpty())
+    private static MerkleTree buildMerkleTree(List<String> transactionIds) {
+        if (transactionIds == null || transactionIds.isEmpty())
             throw new IllegalArgumentException("Invalid transactions.");
+        for (String t : transactionIds) {
+            if (t.isBlank()) throw new IllegalArgumentException("Invalid transactions.");
+        }
 
         List<MerkleNode> leaves = new ArrayList<>();
         List<MerkleNode> currentLevel = new ArrayList<>();
-        for (Transaction t : transactions) {
+        for (String t : transactionIds) {
             if (t == null) throw new IllegalArgumentException("Invalid transaction.");
 
-            MerkleNode leaf = new MerkleNode(t.getTransactionId());
+            MerkleNode leaf = new MerkleNode(t);
             currentLevel.add(leaf);
             leaves.add(leaf);
         }
@@ -90,24 +91,29 @@ public class MerkleUtil {
         return new MerkleTree(root, leaves);
     }
 
-    public static String calculateMerkleRoot(List<Transaction> transactions) {
-        if (transactions == null) 
-            throw new IllegalArgumentException("Invalid transactions.");
-        else if (transactions.isEmpty())
-            return HashUtil.sha256("");
-        else {
-            MerkleTree tree = buildMerkleTree(transactions);
-            return tree.root.hash;
+    public static String calculateMerkleRoot(List<String> transactionIds) {
+        if (transactionIds == null) throw new IllegalArgumentException("Invalid transactions.");
+        if (transactionIds.isEmpty()) return HashUtil.sha256("");
+
+        for (String t : transactionIds) {
+            if (t == null) throw new IllegalArgumentException("Invalid transactions.");
+            if (t.isBlank()) throw new IllegalArgumentException("Invalid transactions.");
         }
+
+        MerkleTree tree = buildMerkleTree(transactionIds);
+        return tree.root.hash;
     }
 
-    static List<MerkleProofStep> generateProof(List<Transaction> transactions, int transactionIndex) {
-        if (transactions == null || transactions.isEmpty())
+    static List<MerkleProofStep> generateProof(List<String> transactionIds, int transactionIndex) {
+        if (transactionIds == null || transactionIds.isEmpty())
             throw new IllegalArgumentException("Invalid transactions.");
-        if (transactionIndex < 0 || transactionIndex >= transactions.size())
+        for (String t : transactionIds) {
+            if (t.isBlank()) throw new IllegalArgumentException("Invalid transactions.");
+        }
+        if (transactionIndex < 0 || transactionIndex >= transactionIds.size())
             throw new IllegalArgumentException("Invalid transaction index.");
 
-        MerkleTree tree = buildMerkleTree(transactions);
+        MerkleTree tree = buildMerkleTree(transactionIds);
         MerkleNode current = tree.leaves.get(transactionIndex);
         List<MerkleProofStep> proof = new ArrayList<>();
 

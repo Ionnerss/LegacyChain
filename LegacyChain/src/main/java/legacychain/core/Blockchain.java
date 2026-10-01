@@ -144,7 +144,7 @@ public class Blockchain {
             || !genesis.getTransactions().isEmpty()
             || !"0".equals(genesis.getPreviousHash())
             || genesis.getHeight() != 0
-            || !genesis.getMerkleRoot().equals(MerkleUtil.calculateMerkleRoot(new ArrayList<Transaction>())))
+            || !genesis.getMerkleRoot().equals(MerkleUtil.calculateMerkleRoot(new ArrayList<String>())))
             return false;
 
         Map<PublicKey, Long> tempBalances = new HashMap<>();
@@ -160,7 +160,7 @@ public class Blockchain {
                 || !currBlock.getPreviousHash().equals(prevBlock.getHash()) 
                 || !currBlock.getHash().startsWith(target)
                 || currBlock.getHeight() != i
-                || !currBlock.getMerkleRoot().equals(MerkleUtil.calculateMerkleRoot(currBlock.getTransactions())))
+                || !currBlock.getMerkleRoot().equals(MerkleUtil.calculateMerkleRoot(currBlock.getTransactionIds())))
                 return false;
 
             for (Transaction t : currBlock.getTransactions()) {
