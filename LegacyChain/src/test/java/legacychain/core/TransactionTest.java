@@ -20,47 +20,42 @@ public class TransactionTest {
 
     @Test
     void testZeroAmount() {
-        assertThrows(IllegalArgumentException.class, 
-            () -> {
-                Wallet sender = new Wallet(), recipient = new Wallet();
-                Transaction t = sender.createTransaction(recipient.getPublicKey(), 0, 0);
-            });
+        assertThrows(IllegalArgumentException.class, () -> {
+            Wallet sender = new Wallet(), recipient = new Wallet();
+            sender.createTransaction(recipient.getPublicKey(), 0, 0);
+        });
     }
 
     @Test 
     void testNegativeAmount() {
-        assertThrows(IllegalArgumentException.class, 
-            () -> {
-                Wallet sender = new Wallet(), recipient = new Wallet();
-                Transaction t = sender.createTransaction(recipient.getPublicKey(), -100, 0);
-            });
+        assertThrows(IllegalArgumentException.class, () -> {
+            Wallet sender = new Wallet(), recipient = new Wallet();
+            sender.createTransaction(recipient.getPublicKey(), -100, 0);
+        });
     }
 
     @Test 
     void testNullSender() {
-        assertThrows(IllegalArgumentException.class, 
-            () -> {
-                Wallet sender = new Wallet(), recipient = new Wallet();
-                Transaction t = new Transaction(null, recipient.getPublicKey(), 100, sender.sign("yolo"), 0);
-            });
+        assertThrows(IllegalArgumentException.class, () -> {
+            Wallet sender = new Wallet(), recipient = new Wallet();
+            Transaction t = new Transaction(null, recipient.getPublicKey(), 100, sender.sign("yolo"), 0);
+        });
     }
 
     @Test
     void testNullRecipient() {
-        assertThrows(IllegalArgumentException.class, 
-            () -> {
-                Wallet sender = new Wallet();
-                Transaction t = new Transaction(sender.getPublicKey(), null, 100, sender.sign("yolo"), 0);
-            });
+        assertThrows(IllegalArgumentException.class, () -> {
+            Wallet sender = new Wallet();
+            sender.createTransaction(null, 30, 0);
+        });
     }
 
     @Test
     void testSREquals() {
-        assertThrows(IllegalArgumentException.class, 
-            () -> {
-                Wallet sender = new Wallet();
-                Transaction t = new Transaction(sender.getPublicKey(), sender.getPublicKey(), 100, sender.sign("yolo"), 0);
-            });
+        assertThrows(IllegalArgumentException.class, () -> {
+            Wallet sender = new Wallet();
+            sender.createTransaction(sender.getPublicKey(), 30, 0);
+        });
     }
 
     @Test
