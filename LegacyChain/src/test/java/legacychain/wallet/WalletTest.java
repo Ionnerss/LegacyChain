@@ -1,8 +1,6 @@
 package legacychain.wallet;
 
 import org.junit.jupiter.api.Test;
-
-import legacychain.core.Transaction;
 import legacychain.crypto.SignatureUtil;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -66,10 +64,9 @@ public class WalletTest {
 
     @Test
     void testSREquals() {
-        assertThrows(IllegalArgumentException.class,
-            () -> {
-                Wallet w = new Wallet();
-                Transaction t = w.createTransaction(w.getPublicKey(), 10, 0);
-            });
+        assertThrows(IllegalArgumentException.class, () -> {
+            Wallet w = new Wallet();
+            w.createTransaction(w.getPublicKey(), 10, 0);
+        });
     }
 }
