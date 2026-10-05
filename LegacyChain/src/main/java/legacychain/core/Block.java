@@ -30,6 +30,19 @@ public class Block {
         this.hash = calculateHash();
 	}
 
+	public static Block restoreBlock(
+		List<Transaction> transactions, 
+		String previousHash, 
+		long timeStamp, 
+		long nonce, 
+		int height) {
+		Block b = new Block(transactions, previousHash, height);
+		b.timeStamp = timeStamp;
+		b.nonce = nonce;
+		b.hash = b.calculateHash();
+		return b;
+	}
+
 	public String getHash() { return this.hash; }
 
 	public String getPreviousHash() { return this.previousHash; }

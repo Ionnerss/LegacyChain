@@ -11,15 +11,27 @@ import legacychain.core.TransactionType;
 import legacychain.persistence.snapshot.TransactionSnapshot;
 
 public class TransactionMapper {
-    public TransactionSnapshot toSnapshot(Transaction t) {
-        if (t == null) throw new IllegalArgumentException("Invalid transaction.");
-        if (t.getType() == TransactionType.NORMAL) {
-            return new TransactionSnapshot(t.getType(), encodePublickKey(t.getSender()), encodePublickKey(t.getRecipient()), 
-                t.getAmount(), Base64.getEncoder().encodeToString(t.getSignature()), t.getTransactionNonce(), null);
+    public TransactionSnapshot toSnapshot(Transaction transaction) {
+        if (transaction == null) throw new IllegalArgumentException("Invalid transaction.");
+        if (transaction.getType() == TransactionType.NORMAL) {
+            return new TransactionSnapshot(
+                transaction.getType(), 
+                encodePublickKey(transaction.getSender()), 
+                encodePublickKey(transaction.getRecipient()), 
+                transaction.getAmount(), Base64.getEncoder().encodeToString(transaction.getSignature()), 
+                transaction.getTransactionNonce(), null
+            );
         }
-        else if (t.getType() == TransactionType.REWARD) {
-            return new TransactionSnapshot(t.getType(), null, encodePublickKey(t.getRecipient()), t.getAmount(),
-                null,null, t.getRewardHeight());
+        else if (transaction.getType() == TransactionType.REWARD) {
+            return new TransactionSnapshot(
+                transaction.getType(), 
+                null, 
+                encodePublickKey(transaction.getRecipient()), 
+                transaction.getAmount(),
+                null,
+                null, 
+                transaction.getRewardHeight()
+            );
         }
         else throw new IllegalArgumentException("Invalid transaction.");
     }
