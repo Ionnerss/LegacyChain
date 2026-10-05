@@ -1,7 +1,6 @@
 package legacychain.core;
 
 import org.junit.jupiter.api.Test;
-import legacychain.core.Transaction.TransactionType;
 import legacychain.merkle.MerkleUtil;
 import legacychain.wallet.Wallet;
 import static org.junit.jupiter.api.Assertions.*;

@@ -143,4 +143,20 @@ public class TransactionTest {
 
         assertNotEquals(a.getTransactionId(), b.getTransactionId());
     }
+
+    @Test 
+    void testGetSignatureImmutability() {
+        Wallet w = new Wallet();
+        Transaction t = w.createTransaction(new Wallet().getPublicKey(), 10, 0);
+        byte[] b = t.getSignature(), c = t.getSignature();
+        c[1] = (byte) (c[1] + 1);
+        assertArrayEquals(b, t.getSignature());
+        assertTrue(t.isValid());
+    }   
+
+    @Test  
+    void testGetSignatureOnRewardReturnsNull() {
+        Transaction t = new Transaction(new Wallet().getPublicKey(), 50, 1);
+        assertEquals(null, t.getSignature());
+    }
 }

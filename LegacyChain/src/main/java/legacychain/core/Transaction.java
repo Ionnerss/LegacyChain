@@ -3,7 +3,6 @@ package legacychain.core;
 import java.security.PublicKey;
 import java.util.Arrays;
 import java.util.Base64;
-
 import legacychain.crypto.HashUtil;
 import legacychain.crypto.SignatureUtil;
 
@@ -16,11 +15,6 @@ public class Transaction {
     private final int transactionNonce;
     private final String transactionId;
     private final int rewardHeight;
-
-    //REWARD since every wallet starts at 0, must be able to mine
-    enum TransactionType {
-        NORMAL, REWARD
-    }
 
     public Transaction(PublicKey sender, PublicKey recipient, long amount, byte[] signature, int transactionNonce) {
         if (recipient == null || amount <= 0 || sender == null || sender.equals(recipient))
@@ -61,6 +55,10 @@ public class Transaction {
         this.transactionId = calculateHash();
     }
 
+    public static Transaction restoreReward(PublicKey recipient, long amount, int rewardHeight) {
+        return new Transaction(recipient, amount, rewardHeight);
+    }
+
     public PublicKey getSender() { return this.sender; }
 
     public PublicKey getRecipient() { return this.recipient; }
@@ -74,6 +72,11 @@ public class Transaction {
     public String getTransactionId() { return this.transactionId; }
     
     public int getRewardHeight() { return this.rewardHeight; }
+
+    public byte[] getSignature() {
+        if (this.signature == null) return null;
+        return Arrays.copyOf(this.signature, this.signature.length); 
+    }
 
     String calculateHash() {
         if (this.type == TransactionType.NORMAL) {

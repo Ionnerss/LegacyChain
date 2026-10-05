@@ -22,7 +22,7 @@ public class SignatureUtil {
         } catch(InvalidKeyException e) {
             throw new IllegalStateException(e);
         } catch (SignatureException e) {
-            throw new IllegalStateException(e);
+            return false;
         }
     }
 }
