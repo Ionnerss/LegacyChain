@@ -845,6 +845,4 @@ public class BlockchainTest {
         Block b = k.minePendingTransactions(new Wallet().getPublicKey());
         assertSame(b, k.getLatestBlock());
     }
-
-
 }

@@ -3,7 +3,6 @@ package legacychain.core;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import legacychain.crypto.HashUtil;
 import legacychain.merkle.MerkleUtil;
 

@@ -25,6 +25,35 @@ public class Blockchain {
         this.chain.add(genesis);
     }
 
+    private Blockchain(int difficulty, List<Block> chain) {
+        this.chain = new ArrayList<>();
+        if (difficulty < 1 || difficulty > 64) 
+            throw new IllegalArgumentException("Invalid difficulty setting.");
+        this.difficulty = difficulty;
+
+        if (chain == null) throw new IllegalArgumentException("Invalid chain.");
+        for (Block b : chain) {
+            this.chain.add(b);
+        }
+    }
+
+    public static Blockchain restoreBlockchain(
+        int difficulty, 
+        List<Block> chain, 
+        List<Transaction> pendingTransactions) {
+        if (chain == null) throw new IllegalArgumentException("Invalid restoration.");
+        Blockchain blockchain = new Blockchain(difficulty, chain);
+        
+        if (blockchain.chain.isEmpty() || blockchain.chain.contains(null) || !blockchain.isValid()) 
+            throw new IllegalArgumentException("Invalid restoration.");
+        
+        if (pendingTransactions == null) throw new IllegalArgumentException("Invalid restoration.");
+        for (Transaction t : pendingTransactions) {
+            blockchain.submitTransaction(t);
+        }
+        return blockchain;
+    }
+
     public int size() { return chain.size(); }
 
     public Block getBlock(int index) { return chain.get(index); }
@@ -32,6 +61,8 @@ public class Blockchain {
     public Block getLatestBlock() { return chain.get(chain.size() - 1); }
 
     public List<Transaction> getPendingTransactions() { return List.copyOf(this.pendingTransactions); }
+
+    public int getDifficulty() { return this.difficulty; }
 
     public int getNextNonce(PublicKey sender) {
         if (sender == null)
