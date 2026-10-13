@@ -526,6 +526,8 @@ At the current API boundary, `calculateMerkleRoot(...)` is public, while proof g
 
 The chain is replayed from Genesis forward.
 
+<img width="3200" height="656" alt="image" src="https://github.com/user-attachments/assets/6fd8a399-ea29-477b-9bfd-d4b85fb61e49" />
+
 ### Genesis validation
 
 Validation checks that Genesis:
