@@ -125,6 +125,10 @@ LegacyChain is currently a **single-process, account/balance-replay blockchain**
 
 ## Architecture
 
+[![LegacyChain System Architecture](docs/diagrams/system-architecture.png)](https://whimsical.com/VgYAzbxTsG9DM8XhwHRgu4)
+
+*Click the diagram to explore the complete interactive architecture in Whimsical.*
+
 At a high level, the transaction lifecycle is:
 
 ```text
