@@ -8,9 +8,14 @@ public record BlockchainSnapshot(
     List<TransactionSnapshot> pendingTransactions
 ) {
     public BlockchainSnapshot {
-        if (chain == null || chain.contains(null)) throw new IllegalArgumentException("Invalid chain.");
-        if (pendingTransactions == null || pendingTransactions.contains(null))
-            throw new IllegalArgumentException("Invalid mempool.");
+        if (chain == null) throw new IllegalArgumentException("Invalid chain.");
+        for (BlockSnapshot blockSnap : chain) {
+            if (blockSnap == null) throw new IllegalArgumentException("Invalid chain.");
+        }
+        if (pendingTransactions == null) throw new IllegalArgumentException("Invalid mempool.");
+        for (TransactionSnapshot ts : pendingTransactions) {
+            if (ts == null) throw new IllegalArgumentException("Invalid mempool.");
+        }
         chain = List.copyOf(chain);
         pendingTransactions = List.copyOf(pendingTransactions);
     }

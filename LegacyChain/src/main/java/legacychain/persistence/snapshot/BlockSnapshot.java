@@ -10,7 +10,10 @@ public record BlockSnapshot(
     int height
 ) {
     public BlockSnapshot {
-        if (transactions == null || transactions.contains(null)) throw new IllegalArgumentException("Invalid transactions.");
+        if (transactions == null) throw new IllegalArgumentException("Invalid transactions.");
+        for (TransactionSnapshot ts : transactions) {
+            if (ts == null) throw new IllegalArgumentException("Invalid transactions.");
+        }
         transactions = List.copyOf(transactions);
     }
 }
