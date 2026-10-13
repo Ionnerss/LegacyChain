@@ -511,6 +511,9 @@ parent = SHA256(leftHash + rightHash)
 
 The final node is duplicated before computing its parent.
 
+<img width="2000" height="992" alt="image" src="https://github.com/user-attachments/assets/1fc6f3f6-f3d0-4e35-9b5f-ead978968373" />
+
+
 LegacyChain also implements Merkle inclusion proof generation and verification using sibling hashes plus left/right position metadata.
 
 At the current API boundary, `calculateMerkleRoot(...)` is public, while proof generation/verification helpers remain package-level implementation APIs used by the Merkle package/tests.
