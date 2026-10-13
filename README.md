@@ -574,6 +574,8 @@ This replay model is important for persistence: a loaded chain must pass the sam
 
 Persistence is implemented as a layered conversion pipeline rather than serializing mutable domain objects directly.
 
+<img width="2912" height="600" alt="image" src="https://github.com/user-attachments/assets/a6512158-1e7b-40d6-815f-f37871c72afd" />
+
 ### Snapshot records
 
 Persistence uses three snapshot records:
