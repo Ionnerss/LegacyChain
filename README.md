@@ -125,6 +125,8 @@ LegacyChain is currently a **single-process, account/balance-replay blockchain**
 
 ## Architecture
 
+<img width="4832" height="584" alt="image" src="https://github.com/user-attachments/assets/1e17ac64-a890-4837-86ac-f93335fd36b8" />
+
 At a high level, the transaction lifecycle is:
 
 ```text
@@ -175,6 +177,8 @@ Validated Blockchain
 ```
 
 The important design principle is that deserialization does **not** bypass ledger rules. Restored blocks are reconstructed, the confirmed chain is validated, and restored pending transactions are passed back through normal mempool submission rules.
+
+<img width="3104" height="824" alt="image" src="https://github.com/user-attachments/assets/1ca70ece-b10d-4b69-92ea-7f8a9bd2e278" />
 
 ---
 
@@ -375,6 +379,8 @@ create transaction
 
 ### Submission validation
 
+<img width="3512" height="832" alt="image" src="https://github.com/user-attachments/assets/bd77827c-285f-4d1e-b7d3-2143f0c6b49e" />
+
 `Blockchain.submitTransaction(...)` rejects:
 
 - `null` transactions;
@@ -407,6 +413,8 @@ The second transaction can be valid because Bob's incoming funds appear earlier 
 The reverse order would not be valid because Bob would try to spend before the incoming pending transfer exists.
 
 ### Mining
+
+<img width="4472" height="224" alt="image" src="https://github.com/user-attachments/assets/102be183-8d4f-4282-b9e7-9b128b41b879" />
 
 `minePendingTransactions(miner)` currently:
 
